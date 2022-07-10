@@ -129,3 +129,10 @@ dmypy.json
 .pyre/
 *.csv
 save1.txt
+
+# LaTeX garbage
+*.aux
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
