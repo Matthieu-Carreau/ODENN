@@ -112,7 +112,17 @@ On résoud le système en écrivant l'équation matricielle le représentant :
 \label{eq:équation matricielle}
 \end{equation}
 
-(Attention pour  certains paramètres comme $(M=5, N=10)$, $\mathcal{M}$ n'est pas inversible)
+(Attention pour  certains paramètres comme $(M=5, N=10)$, $\mathcal{M}$ n'est pas inversible). \\
+
+On initialise l'algorithme avec les paramètres suivants :
+$(M=10, N=100)$
+On obtient les résultats suivants : \\
+$A = [-1.59154943e-01,  4.74338450e-19,  1.08420217e-19,  2.71050543e-20,
+2.74438675e-19,  1.05032085e-19,  9.82558219e-20,  5.92923063e-20,
+5.42101086e-20,  5.42101086e-20]$ \\
+On constate comme attendu que le coefficient $A_1$ est très proche de $-\frac{1}{2\pi}$ (erreur relative de l'ordre de $10^{-16}$), et que les autres coefficients ont une valeur absolue maximale de $1.15 10^{-17}$.
+On peut donc valider notre modèle.
+
 
 \subsubsection{Seconde méthode : descente de gradient}
 
@@ -141,6 +151,18 @@ Puis on calcule itérativement :
     \Vec{A}^{(k+1)} = \Vec{A}^{(k)} - \alpha\Vec{g}^{(k)} 
 \label{eq:équation récurrence descente gradients}
 \end{equation}
+
+
+
+On initialise l'algorithme avec les paramètres suivants :
+$(M=10, N=100, V_0 = 1, \alpha = 10^{-5})$
+On obtient au bout de 10000 itérations les résultats suivants : \\
+$A = [-1.59154943e-01,  1.15066541e-17,  7.99406786e-18,  5.64963221e-18,
+4.88181580e-18,  3.85811144e-18,  3.46024465e-18,  2.88560910e-18,
+2.81846501e-18, 2.43172156e-18]$ \\
+On constate comme attendu que le coefficient $A_1$ est très proche de $-\frac{1}{2\pi}$ (erreur relative de l'ordre de $10^{-15}$), et que les autres coefficients ont une valeur absolue maximale de $1.15 10^{-17}$.
+On peut donc valider notre modèle.
+
 
 \subsection{Recherche de solutions à l'aide d'un réseau de neurones}
 
@@ -173,7 +195,10 @@ On définit une nouvelle fonction d'erreur, calculée à partir des mêmes $N$ p
 
 On calcule ensuite les expressions analytiques des dérivées partielles de $E(P)$ par rapport à chaque paramètre ajustable, puis on cherche à minimiser cette erreur à l'aide de l'algorithme de descente de gradients.
 
-Avec les paramètres $(H=4, N=20)$, on obtient une erreur de $1,2.10^{-2}$ et une estimation visible en figure \ref{fig:resultat_NN}.
+\subsubsection{Résultats obtenus}
+On initialise l'algorithme avec les paramètres suivants :
+$(H=4, N=20)$
+On obtient une erreur de $1,2.10^{-2}$ et une estimation visible en figure \ref{fig:resultat_NN}. Cela permet de valider notre modèle sur l'étude à une dimension.
 
 \begin{figure}
 \centering
@@ -205,8 +230,8 @@ Ce problème admet une unique solution analytique :
 \begin{equation}
 \left\{
     \begin{array}{ll}
-        v_x(t) = V_0 cos(2\pi t) \\
-        v_y(t) = -V_0 sin(2\pi t)
+        v_x(t) = V_0 cos(2\omega t) \\
+        v_y(t) = -V_0 sin(2\omega t)
     \end{array}
 \right.
 \label{eq:solution analytique couplée}
@@ -218,14 +243,14 @@ On cherche des solutions numériques approchées sous la forme de séries de Fou
 \begin{equation}
 \left\{
     \begin{array}{ll}
-        \Tilde{v}_x(t) = V_0 + \sum_{m=0}^{M} A_m (cos(2\pi m t)-1) + B_m sin(2\pi m t) \\
-        \Tilde{v}_y(t) = \sum_{m=0}^{M} -A_m sin(2\pi m t) + B_m cos(2\pi m t)
+        \Tilde{v}_x(t) = V_0 + \sum_{m=1}^{M} A_m (cos(\omega m t)-1) + B_m sin(\omega m t) \\
+        \Tilde{v}_y(t) = \sum_{m=1}^{M} -A_m sin(\omega m t) + B_m (cos(\omega m t)-1)
     \end{array}
 \right.
 \label{eq:solution Fourier couplée}
 \end{equation}
 
-Les coefficients $(A_m)_{m\in \llbracket 0,M \rrbracket}$ et $(B_m)_{m\in \llbracket 0,M \rrbracket}$ sont les paramètres à ajuster.
+Les coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ et $(B_m)_{m\in \llbracket 0,M \rrbracket}$ sont les paramètres à ajuster.
 On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 0,M \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,M \rrbracket, B_m = 0 $. On remarque que le coefficient $A_0$ n'a aucune influence.
 
 On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i}{N-1} $ :
@@ -235,8 +260,21 @@ On définit une fonction d'erreur pour ces solutions potentielles, en s'interres
 \label{eq:erreur descente gradient couplées}
 \end{equation}
 
-La méthode de descente de gradients utilisées précédemment s'adapte très bien ici, et permet de retrouver les valeurs théoriques. On remarque que le coeficient $A_0$ garde la valeur quelconque à laquelle il a été initialisé, en effet la dérivée partielle de l'erreur qui lui est associées est toujours nulle.
+On utilise ensuite la méthode de descente de gradients définie précédemment, en calculant les dérivées partielles suivantes :
+$(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,M \rrbracket}$
 
+\subsubsection{Résultats obtenus}
+On initialise l'algorithme avec les paramètres suivants :
+$(M=10, N=100, V_0 = 1, \omega = 2\pi, \alpha = 10^{-6})$
+On obtient au bout de 10000 itérations les résultats suivants : \\
+$A = [1.00000255e+00, -1.23919994e-06, -2.20679520e-07, -9.12537244e-08,
+-4.93048945e-08, -3.05670278e-08, -2.06219718e-08, -1.47337251e-08,
+-1.09721848e-08, -8.43076573e-09], \\
+B = [-6.59235880e-07,  3.20274560e-07,  5.70352161e-08,  2.35847707e-08,
+1.27429827e-08,  7.90013061e-09,  5.32980412e-09,  3.80797092e-09,
+2.83579070e-09,  2.17895410e-09]$ \\
+On constate comme attendu que le coefficient $A_0$ est très proche de 1 (erreur relative inférieure de $2.55 10^{-6}$), et que les autres coefficients ont une valeur absolue maximale de $1.24 10^{-6}$.
+On peut donc valider notre modèle.
 
 \end{document}
 
