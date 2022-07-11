@@ -1,4 +1,4 @@
-\documentclass[]{article}
+\documentclass[12pt]{report}
 
 \usepackage[utf8]{inputenc}
 \usepackage{stmaryrd}
@@ -8,18 +8,41 @@
 \usepackage{color}
 
 \title{Résolution d'équations différentielles à l'aide de réseaux de neurones}
-\author{Matthieu Carreau\thanks{Encadré par Stam Nicolis et Pascal Thibaudeau}}
+
+\author{
+  Matthieu Carreau\\
+  Telecom Paris, Institut Polytechnique de Paris\\
+  F-91120, Palaiseau, France\\
+  \texttt{matthieu.carreau@telecom-paris.fr} \\
+  [1em] Supervisors: \\
+  Stam Nicolis\\
+  Institut Denis Poisson\\
+  Université de Tours, Université d'Orléans, CNRS (UMR7013)\\
+  Parc de Grandmont, F-37200, Tours, France\\
+  \texttt{stam.nicolis@lmpt.univ-tours.fr}\\
+  [1em] \\
+  Pascal Thibaudeau\\
+  CEA Le Ripault\\
+  BP 16, F-37260, Monts, France\\
+  \texttt{pascal.thibaudeau@cea.fr}
+}
 \date{Juillet 2022}
 
 \begin{document}
 
 \maketitle
 
-\section{Introduction}
+\begin{abstract}
+    {\color{red}{Faire un résumé de ce qu'il y a dans ce document}}
+\end{abstract}
+    
+\tableofcontents{}
+    
+\chapter{Introduction}
 \label{Introduction}
 
 {
-    \color{red}{Dire ici ce que l'on doit faire et proposer un petit résumé des documents lus de façon à montrer en quoi ils sont pertients pour le problème posé.
+    \color{red}{Cette partie positionne le travail dans un contexte. Décrire le contexte. Dire ici ce que l'on doit faire et proposer un petit résumé des documents lus de façon à montrer en quoi ils sont pertients pour le problème posé.
     Par exemple : Bidulle et Machin dans la référence~\cite{BiduletMachin2020} ont montré que ... tandis que Truc et Chmuc dans la référence~\cite{TrucetChmuc2020} ont prouvé que...}
     Dans la section~\ref{section_ode_1}, je montrerai que...
     Dans la section~\ref{section_precession}, je montrerai...
@@ -27,7 +50,7 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Equation différentielle d'ordre 1}
+\chapter{Equation différentielle d'ordre 1}
 \label{section_ode_1}
 
 Soit $\Psi$ une fonction à une variable dont la solution satisfait l'équation dif-férentielle suivante {\color{red}{où $A$ désigne}?}
@@ -42,7 +65,7 @@ Soit $\Psi$ une fonction à une variable dont la solution satisfait l'équation 
 \label{eq:equa dif}
 \end{equation}
 On cherche à tester les méthodes présentées dans la section~\ref{Introduction} sur l'équation~(\ref{eq:equa dif}), pour tout $x\in [0,1]$.
-L'équation~\ref{eq:equa dif} et sa condition initiale connue en $x=0$ admet une solution analytique unique donnée par
+L'équation~(\ref{eq:equa dif}) et sa condition initiale donnée en $x=0$, admet une solution analytique unique qui s'écrit
 \begin{equation}
     {\Psi}(x) = A - \frac{1}{2\pi}\sin(2\pi x)
     \label{eq:solution analytique}
@@ -51,19 +74,21 @@ L'équation~\ref{eq:equa dif} et sa condition initiale connue en $x=0$ admet une
 {\color{red}Qu'est-ce-ça permet de savoir pour la suite ?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Solutions en séries de Fourier}
+\section{Solutions en séries de Fourier}
 
-On cherche des solutions numériques approchées sous la forme de séries de Fourier tronquées avec $M$ harmoniques :
+On cherche des solutions numériques approchées de l'équation~(\ref{eq:equa dif}) sous la forme de séries de Fourier tronquées avec $M$ harmoniques :
 
 \begin{equation}
 \left\{
-    \begin{array}{ll}
-        \Tilde{\Psi}(x) = A + {\mathcal{N}}(x,P) \\
-        {\mathcal{N}}(x,P) = \sum_{m=1}^{M} A_m \sin(2\pi m x) 
-    \end{array}
+    \begin{aligned}
+        \Tilde{\Psi}(x) &= A + {\mathcal{N}}(x,P) \\
+        {\mathcal{N}}(x,P) &= \sum_{m=1}^{M} A_m \sin(2\pi m x) 
+    \end{aligned}
 \right.
 \label{eq:solution Fourier}
 \end{equation}
+
+{\color{red}Définir ce que sont toutes ces grandeurs}
 
 $P$ représente les coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ qui sont les paramètres à ajuster.
 On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 1,M \rrbracket, A_m = -\frac{1}{2\pi}\delta _1 ^m $.
@@ -71,7 +96,7 @@ On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 1,M \
 On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, x_i = \frac{i}{N-1} $
 
 \begin{equation}
-    E = \frac{1}{2}\sum_{i=1}^{N}(\sum_{m=1}^{M} 2\pi m A_m \cos(2\pi m x_i)+cos(2\pi x_i))^2 
+    E = \frac{1}{2}\sum_{i=1}^{N}(\sum_{m=1}^{M} 2\pi m A_m \cos(2\pi m x_i)+\cos(2\pi x_i))^2 
 \label{eq:fonction d'erreur}
 \end{equation}
 
@@ -79,7 +104,7 @@ On calcule alors la dérivée partielle de cette erreur par rapport à chaque pa
 
 \begin{equation}
     \frac{\partial E}{\partial A_l} = 
-    \sum_{i=1}^{N}(\sum_{m=1}^{M} 2\pi m A_m \cos(2\pi m x_i)+cos(2\pi x_i))
+    \sum_{i=1}^{N}(\sum_{m=1}^{M} 2\pi m A_m \cos(2\pi m x_i)+\cos(2\pi x_i))
     2\pi l \cos(2\pi l x_i)
 \label{eq:gradient}
 \end{equation}
@@ -87,7 +112,7 @@ On calcule alors la dérivée partielle de cette erreur par rapport à chaque pa
 Les deux méthodes suivantes ont pour objectif de trouver les coefficient $(A_m)_{m\in \llbracket 1,M \rrbracket}$ qui minimisent $E$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Première méthode : inversion d'un système linéaire}
+\subsection{Première méthode : inversion d'un système linéaire}
 
 On cherche à résoudre le système linéaire donné par : 
 $\forall m \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0$, on définit pour cela les matrices suivantes :
@@ -112,10 +137,10 @@ $\forall m \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0$, o
 \begin{equation}
 \forall (m,l) \in \llbracket 1, N\rrbracket ^2,
 \left\{
-    \begin{array}{ll}
-        r_{m,l} = 2\pi ml \sum_{i=1}^{N}cos(2\pi mx_i)cos(2\pi lx_i) \\
-        b_l = -l\sum_{i=1}^{N}cos(2\pi x_i)cos(2\pi lx_i)
-    \end{array}
+    \begin{aligned}
+        r_{m,l} &= 2\pi ml \sum_{i=1}^{N}\cos(2\pi mx_i)\cos(2\pi lx_i) \\
+        b_l &= -l\sum_{i=1}^{N}\cos(2\pi x_i)\cos(2\pi lx_i)
+    \end{aligned}
 \right.
 \label{eq:définition coefficients}
 \end{equation}
@@ -139,7 +164,7 @@ On constate comme attendu que le coefficient $A_1$ est très proche de $-\frac{1
 On peut donc valider notre modèle.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Seconde méthode : descente de gradients}
+\subsection{Seconde méthode : descente de gradients}
 
 On définit les paramètres suivants :
 
@@ -178,16 +203,16 @@ On peut donc valider notre modèle.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Solutions à l'aide d'un réseau de neurones}
+\section{Solutions à l'aide d'un réseau de neurones}
 
 On cherche à présent à utiliser un réseau de neurones pour approcher la solution de l'équation différentielle. On cherche désormais des solutions approchées sous la forme suivante :
 
 \begin{equation}
 \left\{
-    \begin{array}{ll}
-        \Tilde{\Psi}(x) = A + {\mathcal{N}}(x,P) \\
-        {\mathcal{N}}(x,P) = \sum_{j=1}^{H} v_j \sigma(w_jx+b_j)
-    \end{array}
+    \begin{aligned}
+        \Tilde{\Psi}(x) &= A + {\mathcal{N}}(x,P) \\
+        {\mathcal{N}}(x,P) &= \sum_{j=1}^{H} v_j \sigma(w_jx+b_j)
+    \end{aligned}
 \right.
 \label{eq:solution NN}
 \end{equation}
@@ -210,7 +235,7 @@ On définit une nouvelle fonction d'erreur, calculée à partir des mêmes $N$ p
 On calcule ensuite les expressions analytiques des dérivées partielles de $E(P)$ par rapport à chaque paramètre ajustable, puis on cherche à minimiser cette erreur à l'aide de l'algorithme de descente de gradients.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Résultats obtenus}
+\subsection{Résultats obtenus}
 On initialise l'algorithme avec les paramètres suivants :
 $(H=4, N=20)$
 On obtient une erreur de $1,2.10^{-2}$ et une estimation visible en figure \ref{fig:resultat_NN}. Cela permet de valider notre modèle sur l'étude à une dimension.
@@ -222,46 +247,48 @@ On obtient une erreur de $1,2.10^{-2}$ et une estimation visible en figure \ref{
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Etude du cas de deux équations d'ordre 1 couplées, représentant un mouvement de précession}
+\chapter{Mouvement de précession}
 \label{section_precession}
 On s'intéresse désormais au problème de la précession d'un moment magnétique dans un champ magnétique constant. On le modélise par les équations suivantes pour $t\in [0,1]$ :
 
 \begin{equation}
 \left\{
-    \begin{array}{ll}
-        \frac{dv_x}{dt} = \omega v_y \\
-        \frac{dv_y}{dt} = -\omega v_x
-    \end{array}
+    \begin{aligned}
+        \frac{dv_x}{dt} &= \omega v_y \\
+        \frac{dv_y}{dt} &= -\omega v_x
+    \end{aligned}
 \right.
+\end{equation}
+avec les conditions initiales
+\begin{equation}
 \left\{
-    \begin{array}{ll}
-        v_x(0) = V_0 \\
-        v_y(0) = 0
-    \end{array}
+    \begin{aligned}
+        v_x(0) &= V_0 \\
+        v_y(0) &= 0
+    \end{aligned}
 \right.
 \label{eq:équations couplées}
 \end{equation}
-
-Ce problème admet une unique solution analytique :
+dont la solution analytique vaut
 \begin{equation}
 \left\{
-    \begin{array}{ll}
-        v_x(t) = V_0 \cos(2\omega t) \\
-        v_y(t) = -V_0 \sin(2\omega t)
-    \end{array}
+    \begin{aligned}
+        v_x(t) &=  V_0 \cos(2\omega t)\\
+        v_y(t) &= -V_0 \sin(2\omega t)
+    \end{aligned}
 \right.
 \label{eq:solution analytique couplée}
 \end{equation}
 
-\subsection{Recherche des solutions en séries de Fourier}
+\section{Recherche des solutions en séries de Fourier}
 On cherche des solutions numériques approchées sous la forme de séries de Fourier tronquées avec $M$ harmoniques, en posant la forme suivante :
 
 \begin{equation}
 \left\{
-    \begin{array}{ll}
-        \Tilde{v}_x(t) = V_0 + \sum_{m=1}^{M} A_m (cos(\omega m t)-1) + B_m \sin(\omega m t) \\
-        \Tilde{v}_y(t) = \sum_{m=1}^{M} -A_m \sin(\omega m t) + B_m (cos(\omega m t)-1)
-    \end{array}
+    \begin{aligned}
+        \Tilde{v}_x(t) = V_0 + \sum_{m=1}^{M} A_m (\cos(m\omega t)-1) + B_m \sin(m\omega t) \\
+        \Tilde{v}_y(t) = \sum_{m=1}^{M} -A_m \sin(m\omega t) + B_m (\cos(m\omega t)-1)
+    \end{aligned}
 \right.
 \label{eq:solution Fourier couplée}
 \end{equation}
@@ -279,7 +306,7 @@ On définit une fonction d'erreur pour ces solutions potentielles, en s'interres
 On utilise ensuite la méthode de descente de gradients définie précédemment, en calculant les dérivées partielles suivantes :
 $(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,M \rrbracket}$
 
-\subsubsection{Résultats obtenus}
+\subsection{Résultats obtenus}
 On initialise l'algorithme avec les paramètres suivants :
 $(M=10, N=100, V_0 = 1, \omega = 2\pi, \alpha = 10^{-6})$
 On obtient au bout de 10000 itérations les résultats suivants : \\
@@ -292,7 +319,7 @@ B = [-6.59235880e-07,  3.20274560e-07,  5.70352161e-08,  2.35847707e-08,
 On constate comme attendu que le coefficient $A_0$ est très proche de 1 (erreur relative inférieure de $2.55 10^{-6}$), et que les autres coefficients ont une valeur absolue maximale de $1.24 10^{-6}$.
 On peut donc valider notre modèle.
 
-\section{Conclusion et perspectives}
+\chapter{Conclusion et perspectives}
 \label{Conclusion}
 
 \begin{thebibliography}{2}
