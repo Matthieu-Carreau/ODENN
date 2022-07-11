@@ -5,6 +5,7 @@
 \usepackage[french]{babel}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{subcaption}
 
 \title{Résolution d'équations différentielles à l'aide de réseaux de neurones}
 \author{Matthieu Carreau, encadré par Stam Nicolis et Pascal Thibaudeau}
@@ -152,7 +153,51 @@ Puis on calcule itérativement :
 \label{eq:équation récurrence descente gradients}
 \end{equation}
 
+On cherche à trouver le coefficient $\alpha$ optimal qui assure la convergence tout en maximisant la vitesse de convergence, 
+c'est-à-dire le $\alpha$ le plus élevé possible qui permet la convegrence de la suite.
 
+On exprime tout d'abord le gradient en fonction de la matrice $\mathcal{M}$ et du vecteur $\vec{b}$ définis précédemment qui sont indépendants de $\vec{A}$ et de $k$:
+\begin{equation}
+    \Vec{g}^{(k)} = \mathcal{M}\Vec{A}^{(k)} - \vec{b}
+\label{eq:expression matricielle gradient}
+\end{equation}
+
+Ainsi, l'équation de récurrence (\ref{eq:équation récurrence descente gradients}) se réécrit comme une suite arithmético-géométrique de vecteurs :
+
+\begin{equation}
+    \Vec{A}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \Vec{A}^{(k)} + \alpha\Vec{b}
+\label{eq:équation récurrence descente gradients v2}
+\end{equation}
+
+On en déduit que la suite converge si et seulement si le maximum du module des valeurs propres de la matrice
+$\mathcal{R}_\alpha = \mathcal{I}_M - \alpha \mathcal{M}$ est strictement inférieur à 1.
+On trace donc ce maximum en fonction de $\alpha$ en figure \ref{fig:choix alpha 1D}. 
+On en déduit la valeur critique $\alpha_c = 6.25.10^{-5}$.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth, height=0.8\textwidth]{choix_alpha_1D.jpg}
+        \caption{$\alpha \in [0, 10^{-4}]$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth, height=0.8\textwidth]{choix_alpha_1D_zoom.jpg}
+        \caption{Au voisinage de l'intersection avec 1}
+    \end{subfigure}
+       \caption{Maximum des valeurs propres de $\mathcal{R}_\alpha$ en fonction de $\alpha$}
+       \label{fig:choix alpha 1D}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{comparaison_erreurs_selon_alpha_1D.jpg}
+    \caption{\label{fig:erreur selon alpha}Erreurs avec $\alpha_{min}$ et $\alpha_1$}
+    \end{figure}
 
 On initialise l'algorithme avec les paramètres suivants :
 $(M=10, N=100, V_0 = 1, \alpha = 10^{-5})$
