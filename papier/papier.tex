@@ -7,7 +7,7 @@
 \usepackage{graphicx}
 \usepackage{color}
 
-\title{Résolution d'équations différentielles à l'aide de réseaux de neurones}
+\title{Résolution d'équations différentielles par réseaux de neurones}
 
 \author{
   Matthieu Carreau\\
@@ -109,23 +109,26 @@ On calcule alors la dérivée partielle de cette erreur par rapport à chaque pa
 \label{eq:gradient}
 \end{equation}
 
-Les deux méthodes suivantes ont pour objectif de trouver les coefficient $(A_m)_{m\in \llbracket 1,M \rrbracket}$ qui minimisent $E$.
+{\color{red}Pourquoi faut-il faire celà ?}
+
+Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ qui minimisent $E$.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Première méthode : inversion d'un système linéaire}
 
 On cherche à résoudre le système linéaire donné par : 
-$\forall m \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0$, on définit pour cela les matrices suivantes :
+$\displaystyle{\forall l \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0}$, on définit pour cela les matrices suivantes :
 
 \begin{equation}
     \mathcal{M} = (r_{m,l})_{(m,l)\in \llbracket 1, M\rrbracket ^2}, 
-    \Vec{A} = \begin{pmatrix}
+    \bf{A} = \begin{pmatrix}
                 A_1 \\
                 A_2 \\
                 \vdots \\
                 A_M
               \end{pmatrix}, 
-    \Vec{b} = \begin{pmatrix}
+    \bf{b} = \begin{pmatrix}
                 b_1 \\
                 b_2 \\
                 \vdots \\
@@ -148,11 +151,14 @@ $\forall m \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0$, o
 On résoud le système linéaire associé en écrivant l'équation matricielle le représentant, soit
 
 \begin{equation}
-    \mathcal{M} \Vec{A} = \Vec{b} \Leftrightarrow \Vec{A} = \mathcal{M}^{-1}\Vec{b} 
+    \mathcal{M} \bf{A} = \bf{b} \Leftrightarrow \bf{A} = \mathcal{M}^{-1}\bf{b}
 \label{eq:équation matricielle}
 \end{equation}
+{\color{red}Comment s'y prend-on en pratique pour faire celà ? Qu'as-tu dû faire ?\\}
+(Attention pour certains paramètres comme $(M=5, N=10)$, $\mathcal{M}$ n'est pas inversible).
+{\color{red}Que ce passse-t-il à ce moment là et pourquoi ?}\\
 
-(Attention pour certains paramètres comme $(M=5, N=10)$, $\mathcal{M}$ n'est pas inversible). \\
+
 
 On initialise l'algorithme avec les paramètres suivants :
 $(M=10, N=100)$
@@ -203,7 +209,7 @@ On peut donc valider notre modèle.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Solutions à l'aide d'un réseau de neurones}
+\section{Solutions par réseau de neurones}
 
 On cherche à présent à utiliser un réseau de neurones pour approcher la solution de l'équation différentielle. On cherche désormais des solutions approchées sous la forme suivante :
 
@@ -217,8 +223,9 @@ On cherche à présent à utiliser un réseau de neurones pour approcher la solu
 \label{eq:solution NN}
 \end{equation}
 
-${\mathcal{N}}(x,P)$ correspond donc à la sortie d'un réseau de neurones dont l'architecture est présentée en figure \ref{fig:NN}, contenant une couche cachée intermèdiaire, qui réalise en sortie une somme pondérée de sigmoïdes, la fonction utilisée est $\forall x \in \mathbf{R}, \sigma(x) = \frac{1}{1+e^{-x}}$. Les paramètres $P$ à ajuster sont désormais les coefficients $(w_j)_{j\in \llbracket 1,H \rrbracket}$, $(b_j)_{j\in \llbracket 1,H \rrbracket}$ et $(v_j)_{j\in \llbracket 1,H \rrbracket}$.
+${\mathcal{N}}(x,P)$ correspond donc à la sortie d'un réseau de neurones dont l'architecture est présentée en figure \ref{fig:NN}, contenant une couche cachée intermédiaire, qui réalise en sortie une somme pondérée de sigmoïdes, la fonction utilisée est ${\displaystyle{\forall x \in \mathbf{R}, \sigma(x) = \frac{1}{1+e^{-x}}}}$. Les paramètres $P$ à ajuster sont désormais les coefficients $(w_j)_{j\in \llbracket 1,H \rrbracket}$, $(b_j)_{j\in \llbracket 1,H \rrbracket}$ et $(v_j)_{j\in \llbracket 1,H \rrbracket}$.
 
+{\color{red}Peux-tu donner une référence pour quelqu'un qui cherche ce que tout ceci veut dire?}
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{NN.jpg}
@@ -231,6 +238,7 @@ On définit une nouvelle fonction d'erreur, calculée à partir des mêmes $N$ p
         E(P) = \sum_{i=1}^{N} (\frac{d\Tilde{\Psi}}{dx}(x_i) + \cos(2\pi x))^2
 \label{eq:erreur NN}
 \end{equation}
+{\color{red}L'équation~(\ref{eq:erreur NN}) est-elle correcte ?}
 
 On calcule ensuite les expressions analytiques des dérivées partielles de $E(P)$ par rapport à chaque paramètre ajustable, puis on cherche à minimiser cette erreur à l'aide de l'algorithme de descente de gradients.
 
@@ -280,7 +288,7 @@ dont la solution analytique vaut
 \label{eq:solution analytique couplée}
 \end{equation}
 
-\section{Recherche des solutions en séries de Fourier}
+\section{Solutions en séries de Fourier}
 On cherche des solutions numériques approchées sous la forme de séries de Fourier tronquées avec $M$ harmoniques, en posant la forme suivante :
 
 \begin{equation}
