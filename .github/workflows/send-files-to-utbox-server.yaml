@@ -1,5 +1,5 @@
 on: push
-name: 🚀 Deploy website on push
+name: 🚀 Deploy LaTeX on push
 jobs:
   web-deploy:
     name: 🎉 Deploy
@@ -7,10 +7,14 @@ jobs:
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v2
-    
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+    - name: Compile LaTeX document
+      uses: xu-cheng/latex-action@v2
       with:
-        server: utbox.univ-tours.fr
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_password }}
+        root_file: papier.tex
+        working_directory: papier
+    - name: Download artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: PDF
+        path: papier/papier.pdf
+        retention-days: 5
