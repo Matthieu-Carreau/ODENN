@@ -135,4 +135,5 @@ save1.txt
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+*.toc
 
