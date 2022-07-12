@@ -5,8 +5,8 @@
 \contentsline {subsection}{\numberline {2.1.1}Première méthode : inversion d'un système linéaire}{4}%
 \contentsline {subsection}{\numberline {2.1.2}Seconde méthode : descente de gradients}{5}%
 \contentsline {section}{\numberline {2.2}Solutions par réseau de neurones}{7}%
-\contentsline {subsection}{\numberline {2.2.1}Résultats obtenus}{8}%
-\contentsline {chapter}{\numberline {3}Mouvement de précession}{10}%
-\contentsline {section}{\numberline {3.1}Solutions en séries de Fourier}{10}%
-\contentsline {subsection}{\numberline {3.1.1}Résultats obtenus}{11}%
-\contentsline {chapter}{\numberline {4}Conclusion et perspectives}{12}%
+\contentsline {subsection}{\numberline {2.2.1}Résultats obtenus}{10}%
+\contentsline {chapter}{\numberline {3}Mouvement de précession}{11}%
+\contentsline {section}{\numberline {3.1}Solutions en séries de Fourier}{11}%
+\contentsline {subsection}{\numberline {3.1.1}Résultats obtenus}{12}%
+\contentsline {chapter}{\numberline {4}Conclusion et perspectives}{13}%

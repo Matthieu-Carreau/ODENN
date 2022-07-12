@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{color}
+\usepackage{amsfonts}
 
 \title{Résolution d'équations différentielles par réseaux de neurones}
 
@@ -72,7 +73,7 @@ L'équation~(\ref{eq:equa dif}) et sa condition initiale donnée en $x=0$, admet
     \label{eq:solution analytique}
 \end{equation}
 
-{\color{red}Qu'est-ce-ça permet de savoir pour la suite ?}
+
 Cela nous permettra par la suite d'évaluer nos solutions numériques, en les comparant à cette solution analytique.
 
 
@@ -93,11 +94,10 @@ le deuxième $\mathcal{N}(x,\bf{A})$ dépendant des coefficients $(A_m)_{m\in \l
 \label{eq:solution Fourier}
 \end{equation}
 
-{\color{red}Définir ce que sont toutes ces grandeurs}
 
 
 
-On définit une fonction d'erreur pour ces solutions potentielles, à partir de la valeur de la dérivée de $\Tilde{\Psi}$ aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, x_i = \frac{i}{N-1} $
+On définit une fonction d'erreur pour ces solutions potentielles, à partir de la valeur de la dérivée de $\Tilde{\Psi}$ aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, x_i = \frac{i-1}{N} $
 
 \begin{equation}
     E = \frac{1}{2}\sum_{i=1}^{N}(\sum_{m=1}^{M} 2\pi m A_m \cos(2\pi m x_i)+\cos(2\pi x_i))^2 
@@ -120,7 +120,6 @@ Or ces dérivées partielles sont données pour $l \in \llbracket 1,M \rrbracket
 \label{eq:gradient}
 \end{equation}
 
-{\color{red}Pourquoi faut-il faire celà ?}
 
 Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ qui vérifient la condition \ref{eq:condition nécessaire A_l}, et de vérifier que le vecteur de coefficients
 trouvé correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,M \rrbracket, A_m = -\frac{1}{2\pi}\delta _1 ^m $.
@@ -160,27 +159,44 @@ $\displaystyle{\forall l \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partia
 \label{eq:définition coefficients}
 \end{equation}
 
-Lorsque $\mathcal{M}$ est inversible, on résoud le système linéaire 
-en écrivant l'équation matricielle le représentant, soit
+On souhaite alors résoudre le système linéaire en écrivant 
+l'équation matricielle le représentant, c'est-à-dire :
 
 \begin{equation}
     \mathcal{M} \bf{A} = \bf{b} \Leftrightarrow \bf{A} = \mathcal{M}^{-1}\bf{b}
 \label{eq:équation matricielle}
 \end{equation}
-{\color{red}Comment s'y prend-on en pratique pour faire celà ? Qu'as-tu dû faire ?\\}
-(Attention pour certains paramètres comme $(M=5, N=10)$, $\mathcal{M}$ n'est pas inversible).
-{\color{red}Que ce passse-t-il à ce moment là et pourquoi ?}\\
+
+On réalise l'implémentation en python, en instanciant 
+les matrices définies précédemment et à l'aide de la bibliothèque \emph{numpy}. 
+On peut constater que la matrice $\mathcal{M}$ n'est pas toujours inversible
+selon le choix de $M$ et $N$. En effet, on peut montrer {\color{red}(à rajouter en annexe)} que c'est nécessairement le cas lorsque $M>N$, 
+mais on remarque également qu'elle ne l'est pas non plus lorsque $M$ et $N$ sont proches par exemple pour $M=N=10$. Il serait interressant d'approfondir ce point
+pour savoir si cela se traduit par le fait que $E$ admette plusieurs minimums locaux par exemple.
+Il semble que choisir $N\gg M$ soit suffisant pour que $\mathcal{M}$ soit inversible. On choisira alors $M=10, N=100$ pour la suite.
+On obtient alors les coefficients présentés en figure \ref{fig:résultats 1 inv} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
+On constate que les erreurs sur chaque coefficient
+est inférieure à $10^{-16}$, on valide donc cette première méthode.
 
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{coefs_1_inv.jpg}
+        \caption{Coefficients trouvés}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{coefs_1_inv_erreur.jpg}
+        \caption{Valeurs absolue de l'erreur pour chaque coefficient}
+    \end{subfigure}
+       \caption{Résultats de la méthode de l'inversion de système}
+       \label{fig:résultats 1 inv}
+\end{figure}
 
-On initialise l'algorithme avec les paramètres suivants :
-$(M=10, N=100)$
-On obtient les résultats suivants : \\
-$A = [-1.59154943e-01,  4.74338450e-19,  1.08420217e-19,  2.71050543e-20,
-2.74438675e-19,  1.05032085e-19,  9.82558219e-20,  5.92923063e-20,
-5.42101086e-20,  5.42101086e-20]$ \\
-On constate comme attendu que le coefficient $A_1$ est très proche de $-\frac{1}{2\pi}$ (erreur relative de l'ordre de $10^{-16}$), et que les autres coefficients ont une valeur absolue maximale de $1.15 10^{-17}$.
-On peut donc valider notre modèle.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Seconde méthode : descente de gradients}
@@ -211,9 +227,7 @@ Puis on calcule itérativement :
 \label{eq:équation récurrence descente gradients}
 \end{equation}
 
-On cherche à trouver le coefficient $\alpha$ optimal qui assure la convergence tout en maximisant la vitesse de convergence, 
-c'est-à-dire le $\alpha$ le plus élevé possible qui permet la convegrence de la suite.
-
+On cherche à trouver le coefficient $\alpha$ optimal qui assure la convergence tout en maximisant la vitesse de convergence.
 On exprime tout d'abord le gradient en fonction de la matrice $\mathcal{M}$ et du vecteur $\bf{b}$ définis précédemment qui sont indépendants de $\bf{A}$ et de $k$:
 \begin{equation}
     \bf{g}^{(k)} = \mathcal{M}\bf{A}^{(k)} - \bf{b}
@@ -227,11 +241,20 @@ Ainsi, l'équation de récurrence (\ref{eq:équation récurrence descente gradie
 \label{eq:équation récurrence descente gradients v2}
 \end{equation}
 
-On en déduit que la suite converge si et seulement si le maximum du module des valeurs propres de la matrice
-$\mathcal{R}_\alpha = \mathcal{I}_M - \alpha \mathcal{M}$ est strictement inférieur à 1.
+On en déduit que la suite converge si et seulement si la norme $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ tend vers 0de le maximum du module des valeurs propres de la matrice
+$\mathcal{R}_\alpha = \mathcal{I}_M - \alpha \mathcal{M}$ est strictement inférieur à 1. De plus, elle convergera
+d'autant plus vit que ce maximum est faible.
 On trace donc ce maximum en fonction de $\alpha$ en figure \ref{fig:choix alpha 1D}. 
-On en déduit la valeur critique $\alpha_c = 6.25.10^{-5}$.
+On en déduit la valeur critique $\alpha_c = 6.2807.10^{-5}$, pour laquelle le maximum des modules vaut $1$, ainsi que la 
+valeur $\alpha_{min} = 6.2189.10^{-5}$ pour laquelle le maximum des modules est minimum.
 
+On éxécute l'algorithme en parallèle pour les deux valeurs de $\alpha$ trouvées précédemment ainsi que pour une valeur 
+$\alpha_1 = 6.3.10^{-5}$, tel que le maximum des modules des valeurs propres de $\mathcal{R}_\alpha$ soit supérieur à 1.
+On montre l'évolution de l'erreur en fonction du nombre d'itérations en figure \ref{fig:erreur selon alpha}. On constate 
+que $\alpha_{min}$ donne lieu à une décroissance exponentielle de l'erreur pendant les 2000 premières itérations, qui 
+devient ensuite stationnaire. Tandis que $\alpha_1$ donne une erreur qui croît exponentiellement car la norme de 
+$(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ diverge exponentiellement. La valeur $\alpha_c$ donne une erreur constante, 
+elle correspond au cas limite entre les 2 cas précédents.
 
 \begin{figure}
     \centering
@@ -254,17 +277,34 @@ On en déduit la valeur critique $\alpha_c = 6.25.10^{-5}$.
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{comparaison_erreurs_selon_alpha_1D.jpg}
-    \caption{\label{fig:erreur selon alpha}Erreurs avec $\alpha_{min}$ et $\alpha_1$}
+    \caption{Erreurs en fonction du nombre d'itérations pour 3 valeurs de $\alpha$}
+    \label{fig:erreur selon alpha}
     \end{figure}
 
-On initialise l'algorithme avec les paramètres suivants :
-$(M=10, N=100, V_0 = 1, \alpha = 10^{-5})$
-On obtient au bout de 10000 itérations les résultats suivants : \\
-$A = [-1.59154943e-01,  1.15066541e-17,  7.99406786e-18,  5.64963221e-18,
-4.88181580e-18,  3.85811144e-18,  3.46024465e-18,  2.88560910e-18,
-2.81846501e-18, 2.43172156e-18]$ \\
-On constate comme attendu que le coefficient $A_1$ est très proche de $-\frac{1}{2\pi}$ (erreur relative de l'ordre de $10^{-15}$), et que les autres coefficients ont une valeur absolue maximale de $1.15 10^{-17}$.
-On peut donc valider notre modèle.
+
+On retient donc les résultats obtenus pour $\alpha_{min}$ que l'on montre en figure
+ \ref{fig:résultats 1 DG} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
+On constate que les erreurs sur chaque coefficient
+est inférieure à $10^{-16}$, on valide donc cette seconde méthode.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{coefs_1_DG.jpg}
+        \caption{Coefficients trouvés}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{coefs_1_DG_erreur.jpg}
+        \caption{Valeurs absolue de l'erreur pour chaque coefficient}
+    \end{subfigure}
+       \caption{Résultats de la méthode de descnte de gradients}
+       \label{fig:résultats 1 DG}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -291,7 +331,9 @@ ${\mathcal{N}}(x,P)$ correspond donc à la sortie d'un réseau de neurones dont 
 \caption{\label{fig:NN}Réseau de neurones}
 \end{figure}
 
-On définit une nouvelle fonction d'erreur, calculée à partir des mêmes $N$ points que précédemment : $\forall i \in\llbracket 1,N \rrbracket, x_i = \frac{i}{N-1} $
+On définit une nouvelle fonction d'erreur, calculée à partir des $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, x_i = \frac{i-1}{N-1} $ 
+%(Contrairement à la fonction d'erreur définie pour les solutions en série de Fourier, 
+%on définit ici les points de tests de façon à inclure $x_N = 1$ car la fonction définie n'est plus nécessairement périodique, alors que ce point aurait été redondant avec le point $x_0 = 0$ pour les fonctions 1\_périodiques)
 
 \begin{equation}
         E(P) = \sum_{i=1}^{N} (\frac{d\Tilde{\Psi}}{dx}(x_i) + \cos(2\pi x))^2
@@ -363,7 +405,7 @@ On cherche des solutions numériques approchées sous la forme de séries de Fou
 Les coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ et $(B_m)_{m\in \llbracket 0,M \rrbracket}$ sont les paramètres à ajuster.
 On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 0,M \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,M \rrbracket, B_m = 0 $. On remarque que le coefficient $A_0$ n'a aucune influence.
 
-On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i}{N-1} $ :
+On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
 
 \begin{equation}
         E(P) = \sum_{i=1}^{N} (\frac{d\Tilde{v}_x}{dt}(t_i) - \omega \Tilde{v}_y(t_i))^2 + (\frac{d\Tilde{v}_y}{dt}(t_i) + \omega \Tilde{v}_x(t_i))^2
