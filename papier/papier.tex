@@ -415,18 +415,94 @@ On définit une fonction d'erreur pour ces solutions potentielles, en s'interres
 On utilise ensuite la méthode de descente de gradients définie précédemment, en calculant les dérivées partielles suivantes :
 $(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,M \rrbracket}$
 
-\subsection{Résultats obtenus}
-On initialise l'algorithme avec les paramètres suivants :
-$(M=10, N=100, V_0 = 1, \omega = 2\pi, \alpha = 10^{-6})$
-On obtient au bout de 10000 itérations les résultats suivants : \\
-$A = [1.00000255e+00, -1.23919994e-06, -2.20679520e-07, -9.12537244e-08,
--4.93048945e-08, -3.05670278e-08, -2.06219718e-08, -1.47337251e-08,
--1.09721848e-08, -8.43076573e-09], \\
-B = [-6.59235880e-07,  3.20274560e-07,  5.70352161e-08,  2.35847707e-08,
-1.27429827e-08,  7.90013061e-09,  5.32980412e-09,  3.80797092e-09,
-2.83579070e-09,  2.17895410e-09]$ \\
-On constate comme attendu que le coefficient $A_0$ est très proche de 1 (erreur relative inférieure de $2.55 10^{-6}$), et que les autres coefficients ont une valeur absolue maximale de $1.24 10^{-6}$.
-On peut donc valider notre modèle.
+On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bf{P}$ comme la concaténation des 
+vecteurs $\bf{A}$ et $\bf{B}$ et le vecteur $\bf{g}$ comme le vecteur contenant les dérivées  partielles de $E$
+par rapport à chaque composante de $\bf{P}$. 
+
+\begin{equation}
+    \bf{P}^{(k)} = \begin{pmatrix}
+                A_1^{(k)} \\
+                \vdots \\
+                A_M^{(k)} \\
+                B_1^{(k)} \\
+                \vdots \\
+                B_M^{(k)}
+              \end{pmatrix},
+    \bf{g}^{(k)} = \begin{pmatrix}
+                \frac{\partial E^{(k)}}{\partial A_1^{(k)}} \\
+                \vdots \\
+                \frac{\partial E^{(k)}}{\partial A_M^{(k)}} \\
+                \frac{\partial E^{(k)}}{\partial B_1^{(k)}} \\
+                \vdots \\
+                \frac{\partial E^{(k)}}{\partial B_M^{(k)}} 
+              \end{pmatrix},     
+\label{eq:définition descente de gradients 2D}
+\end{equation}
+
+Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2M$ ainsi qu'un nouveau vecteur $\bf{b}$ de taille $2M$ tels que les 
+équations définissant la descente de gradients soient les suivantes :
+
+\begin{equation}
+    \bf{P}^{(k+1)} = \bf{P}^{(k)} - \alpha\bf{g}^{(k)} 
+\label{eq:équation récurrence descente gradients 2D}
+\end{equation}
+
+\begin{equation}
+    \bf{g}^{(k)} = \mathcal{M}\bf{P}^{(k)} - \bf{b}
+\label{eq:expression matricielle gradient 2D}
+\end{equation}
+
+\begin{equation}
+    \bf{P}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \bf{P}^{(k)} + \alpha\bf{b}
+\label{eq:équation récurrence descente gradients v2 2D}
+\end{equation}
+
+On réalise la même étude qu'en dimension 1 pour la recherche du coefficient $\alpha_{min}$ qui minimise le maximum
+des modules des valeurs propres de $\mathcal{R}_\alpha = \mathcal{I}_M - \alpha \mathcal{M}$, ainsi que le coefficient 
+$\alpha_c$ à ne pas dépasser, à partir duquel ce maximum et supérieur à 1 et la suite diverge.
+On trouve les valeurs suivantes $\alpha_{min} = 6.0906.10^{-6}$ et $\alpha_c = 6.1146.10^{-6}$,  et l'évolution du 
+maximum en fonction de alpha est montré en figure \ref{fig:choix_alpha_2D}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{choix_alpha_2D.jpg}
+    \caption{\label{fig:choix_alpha_2D}Evolution du maximum du module en fonction de $\alpha$}
+\end{figure}
+
+On éxécute l'algorithme en choisissant la valeur $\alpha_{min}$ précédente et on montre l'évolution de 
+l'erreur en fonction du nombre d'itérations en figure \ref{fig:Erreur_2_DG}. 
+On constate comme dans le cas à 1 dimension que $\alpha_{min}$ donne lieu à une décroissance exponentielle de l'erreur, 
+cette fois pendant les 4500 premières itérations, qui devient ensuite quasiment stationnaire, de l'ordre de $10^{-25}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Erreur_2_DG.jpg}
+    \caption{\label{fig:Erreur_2_DG}Valeur de la fonction d'erreur en fonction du nombre d'itérations}
+\end{figure}
+
+Les coefficients finaux de $P$ ainsi que les valeurs absolues de leurs erreurs sont représentées 
+en figure \ref{fig:résultats 2 DG}.
+On peut constater que l'on retrouve bien les coefficients attendus, avec une erreur au maximum de 
+l'ordre de $10^{-15}$.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{coefs_2_DG.jpg}
+        \caption{Coefficients trouvés}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{coefs_2_DG_erreur.jpg}
+        \caption{Valeurs absolue de l'erreur pour chaque coefficient}
+    \end{subfigure}
+       \caption{Résultats de la méthode de descente de gradients pour le mouvement de précession}
+       \label{fig:résultats 2 DG}
+\end{figure}
+
 
 \chapter{Conclusion et perspectives}
 \label{Conclusion}

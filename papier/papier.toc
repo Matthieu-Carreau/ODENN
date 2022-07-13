@@ -8,5 +8,4 @@
 \contentsline {subsection}{\numberline {2.2.1}Résultats obtenus}{10}%
 \contentsline {chapter}{\numberline {3}Mouvement de précession}{11}%
 \contentsline {section}{\numberline {3.1}Solutions en séries de Fourier}{11}%
-\contentsline {subsection}{\numberline {3.1.1}Résultats obtenus}{12}%
-\contentsline {chapter}{\numberline {4}Conclusion et perspectives}{13}%
+\contentsline {chapter}{\numberline {4}Conclusion et perspectives}{15}%
