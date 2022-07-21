@@ -503,6 +503,73 @@ l'ordre de $10^{-15}$.
        \label{fig:résultats 2 DG}
 \end{figure}
 
+\section{Solutions aprochées par un réseau de neurones}
+
+On cherche dans ce paragraphe à approcher la solution du système des 2 équations
+grâce à un réseau de neurones.
+On choisit l'architecture suivante pour le réseau de neurones : 
+1 entrée pour la variable temporelle, une première couche intermédiaire de 
+$h_1=32$ neurones, une seconde couche intermédiaire de $h_2=8$ neurones, toutes 
+deux utilisant la sigmoïde définie précédement comme fonction d'activation, 
+et enfin 2 neurones de sortie connectées à la deuxième couche intermédiaire, avec 
+l'idientité comme fonction d'activation en sortie.
+On note les sorties de ces deux derniers neurones respectivement $\mathcal{N}_x(t, P)$
+et $\mathcal{N}_y(t, P)$, où $P$ représente l'ensemble des paramètres du réseau de neurones.
+On construit alors nos solutions approchées de la façon suivante :
+
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \Tilde{v}_x(t) &= V_0+ t\mathcal{N}_x(t, P) \\
+            \Tilde{v}_y(t) &= t\mathcal{N}_y(t, P)
+        \end{aligned}
+    \right.
+    \label{eq:solution 2_NN}
+    \end{equation}
+
+On définit une fonction d'erreur pour ces solutions potentielles, 
+en s'interressant aux $N$ points suivants de l'intervalle [-1, 1]: 
+$\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
+
+\begin{equation}
+        E(P) = \frac{1}{N}\sum_{i=1}^{N} (\frac{d\Tilde{v}_x}{dt}(t_i) - \omega \Tilde{v}_y(t_i))^2 + (\frac{d\Tilde{v}_y}{dt}(t_i) + \omega \Tilde{v}_x(t_i))^2
+\label{eq:erreur 2_NN}
+\end{equation}
+
+
+On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.007,
+50000 itérations, et on lance 3 entraînements pour $N \in \{10,40,100\}$. On obtient les résultats montrés 
+en figure \ref{fig:résultats 2 NN en fonction de N}, où l'axe vertical représente le temps,
+et les axes horizontaux représentent $v_x$ et $v_y$. La solution analytique est représentée 
+en orange, la solution approchée est représentée en bleu, et les points rouges sont les
+points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{direct_training_N=10.png}
+        \caption{Solution obtenue pour $N=10$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{direct_training_N=40.png}
+        \caption{Solution obtenue pour $N=40$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{direct_training_N=100.png}
+        \caption{Solution obtenue pour $N=100$}
+    \end{subfigure}
+       \caption{Représentations graphiques de $v_x$ et  $v_y$ en fonction du temps par le réseau de neurones}
+       \label{fig:résultats 2 NN en fonction de N}
+\end{figure}
+
+
+
 \chapter{Equation de Précession et ajout du terme de Gilbert}
 
 On s'interesse désormais à l'équation suivante pour la précession du moment 
@@ -619,7 +686,28 @@ la sortie du réseau de neurones varie entre 0.60 et 0.74 sur l'intervalle étud
 la valeur finale de l'erreur est 3.04, ce qui correspond à $\mu_b$ et $E(\mu_b)$.
 Et pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur 
 vaut 0.82, 
-ce qui correspond bien au second minimum local $E(\mu_a)$
+ce qui correspond bien au second minimum local $E(\mu_a)$.
+
+On peut alors remettre en question le modèle choisit pour notre 
+réseau de neurones, qui n'est pas forcément le plus adapté. On peut
+par exemple essayer de changer les fonctions d'activations utilisées
+par les couches intermédiaires, qui étaient des sigmoïdes, et les 
+remplacer par la fonction $relu$.
+
+On ainsi pu obtenir des résultats satisfaisants visibles en figure 
+\ref{fig:relu apprentissage direct}
+en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, 
+avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
+L'erreur finale est de 0.018.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{direct_relu_0.001_10000_32_16_v2.png}
+    \caption{Résultats obtenus avec la fonction d'activation $relu$}
+    \label{fig:relu apprentissage direct}
+\end{figure}
+
 
 
 \chapter{Conclusion et perspectives}
