@@ -503,6 +503,64 @@ l'ordre de $10^{-15}$.
        \label{fig:résultats 2 DG}
 \end{figure}
 
+\chapter{Equation de Précession et ajout du terme de Gilbert}
+
+On s'interesse désormais à l'équation suivante pour la précession du moment 
+magnétique représenté par le vecteur $\bf{M} \in \mathbf{R}^3$, en fonction de la 
+constante réelle $\lambda$ sans dimension, et du vecteur 
+$\displaystyle{\bf{\omega} = \begin{pmatrix}
+    0 \\
+    0 \\
+    \omega_z
+  \end{pmatrix}}$
+représentant le champ magnétique.
+
+\begin{equation}
+    \frac{d\bf{M}}{dt} = \bf{\omega} \times (\bf{M}+\lambda \frac{d\bf{M}}{dt})
+    \label{eq:equation Gilbert}
+\end{equation}
+
+
+\section{Première approche : résolution de l'équation "projetée"}
+
+En prenant le produit vectoriel à gauche des deux membres de l'équation, 
+on peut projetter cette équation différentielle sur le plan normal à $\bf{M}$,
+et obtenir une nouvelle équation qui  peut être représentée par les 3 
+équations différentielles scalaires suivantes (après un chagement d'échelle temporelle) :
+
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \frac{dM_x}{d\tilde{t}} &= M_y\omega_z + \lambda M_x M_z \omega_z \\
+            \frac{dM_y}{d\tilde{t}} &= -M_x\omega_z + \lambda M_y M_z \omega_z \\
+            \frac{dM_z}{d\tilde{t}} &= \lambda\omega_z (M_z^2-1) 
+        \end{aligned} 
+    \right. 
+    \label{eq:equations scalaires Gilbert}
+\end{equation}
+
+On remarque que l'équation sur $M_z$ est découplée des 2 autres, on cherche ainsi à résoudre
+celle-ci en premier lieu.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Résolution de l'équation sur $M_z$}
+
+
+On utilise la même approche avec un réseau de neurones que précédemment à l'aide d'un réseau de neurones.
+On réalisera à présent les implémentations en python à l'aide de la bibliothèque TensorFlow.
+
+
+On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, 
+suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés
+à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $P$.
+Comme précédemment, afin de satisfaire la condition initiale, on cherche les fonction $\tilde{M_z}$
+sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},P)$ représente la sortie du réseau de neurones.
+
+\begin{equation}
+    \Tilde{M_z}(\Tilde{t}) = M_z(0) + {\mathcal{N}}(\Tilde{t},P) 
+    \label{eq:solution NN Mz}
+\end{equation}
+
 
 \chapter{Conclusion et perspectives}
 \label{Conclusion}

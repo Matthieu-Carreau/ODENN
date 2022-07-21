@@ -8,4 +8,7 @@
 \contentsline {subsection}{\numberline {2.2.1}Résultats obtenus}{10}%
 \contentsline {chapter}{\numberline {3}Mouvement de précession}{11}%
 \contentsline {section}{\numberline {3.1}Solutions en séries de Fourier}{11}%
-\contentsline {chapter}{\numberline {4}Conclusion et perspectives}{15}%
+\contentsline {chapter}{\numberline {4}Equation de Précession et ajout du terme de Gilbert}{15}%
+\contentsline {section}{\numberline {4.1}Première approche : résolution de l'équation "projetée"}{15}%
+\contentsline {subsection}{\numberline {4.1.1}Résolution de l'équation sur $M_z$}{16}%
+\contentsline {chapter}{\numberline {5}Conclusion et perspectives}{17}%
