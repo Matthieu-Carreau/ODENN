@@ -564,10 +564,63 @@ sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},P)$ représente la sortie d
 On définit la fonction d'erreur suivante :
 
 
-On fixe les paramètres suivants : $\lambda = 0.3$, intervalle d'étude : $[-1,1]$, $M_z(0) = 0$.
+On fixe les paramètres suivants : $\lambda = 0.3$, nombre de points de tests : $N=30$, 
+intervalle d'étude : $[t_a = -1, t_b = 1]$, $M_z(0) = 0$.
 Lors des essais d'entraînement du modèle on fait face à plusieurs problèmes.
 On remarque que souvent la sortie du réseau de neurones est quasiment constante
-sur l'intervalle d'étude
+sur l'intervalle d'étude. Ainsi, il semble que l'entraînement ne consiste alors dans ce 
+cas qu'à ajuster cette valeur constante pour minimser la fonction d'erreur dans le cas 
+où $M_z$ est linéaire par rapport à $\tilde{t}$, (d'après l'équation \ref{eq:solution NN Mz},
+pour ${\mathcal{N}}(\Tilde{t},P) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
+
+Après plusieurs essais d'entraînement, on remarque que l'on tombe sur l'une ou l'autre des 2 solutions
+présentées en figure \ref{fig:minimums locaux Mz}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{min_loc1.png}
+        \caption{Première solution linéaire}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth, height=0.9\textwidth]{min_loc2.png}
+        \caption{Seconde solution linéaire}
+    \end{subfigure}
+       \caption{Solutions trouvées pour $M_z$ après de rapides entraînements}
+       \label{fig:minimums locaux Mz}
+\end{figure}
+
+On peut valider cette hypothèse en exprimant analytiquement notre fonction d'erreur pour une fonction $M_z$ 
+linéaire : $\forall \tilde{t} \in \mathbf{R}, \tilde{M_z}(\tilde{t}) = \mu  \tilde{t}$. On peut calculer notre erreur, 
+en fonction de $\mu$, en remplaçant la somme discrète par une intégrale qui peut être calculée facilement car 
+l'intégrande est alors une fonction polynomiale en $\tilde{t}$ :
+
+\begin{equation}
+    \begin{aligned}
+        E(\mu) &= \frac{1}{t_b-t_a}\int_{t_b}^{t_a} (\frac{d\tilde{M_z}}{d\tilde{t}}(\tilde{t})-\lambda \omega_z (\tilde{M_z}(t)^2-1))^2 \,d \tilde{t} \\
+        E(\mu) &= \frac{16}{5}\lambda^2\omega_z^2\mu^4 
+            - \frac{8}{3}\lambda\omega_z\mu^3
+            + (1- \frac{8}{3}\lambda^2\omega_z^2)\mu^2
+            + 2\lambda\omega_z\mu
+            + \lambda^2\omega_z^2
+    \end{aligned}
+    \label{eq:fonction d'erreur analytique, M_z linéaire}
+\end{equation}
+
+On remarque alors que cette fonction admet deux minimums locaux qui ont pour valeurs
+approchées : $ \mu_a \approx 0.696$, $E(\mu_a) \approx 3.04$ et 
+$\mu_b \approx -0.574$,$ E(\mu_b) \approx -0.78$. 
+Cela est effectivement proche des valeurs que l'on obtient lors des 
+entraînements montrés en figure \ref{fig:minimums locaux Mz}, en effet, sur le premier exemple,
+la sortie du réseau de neurones varie entre 0.60 et 0.74 sur l'intervalle étudié, et
+la valeur finale de l'erreur est 3.04, ce qui correspond à $\mu_b$ et $E(\mu_b)$.
+Et pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur 
+vaut 0.82, 
+ce qui correspond bien au second minimum local $E(\mu_a)$
+
 
 \chapter{Conclusion et perspectives}
 \label{Conclusion}
