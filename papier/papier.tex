@@ -8,6 +8,9 @@
 \usepackage{subcaption}
 \usepackage{color}
 \usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{hyperref}
 
 \title{Résolution d'équations différentielles par réseaux de neurones}
 
@@ -569,32 +572,27 @@ points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \r
 \end{figure}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Précession avec amortissement}
+\label{chap:precession_gilbert}
 
-\chapter{Equation de Précession et ajout du terme de Gilbert}
+Dans ce chapitre, on s'intéresse à déterminer le mouvement de précession d'un moment magnétique $\bf{M} \in \mathbb{R}^3$ amorti.
+Son équation d'évolution est représentée en fonction d'une constante d'amortissement réelle et sans dimension notée $\lambda$ et s'établit, pour simplifier, autour d'un vecteur ${\bm{\omega}}$ pointant le long de l'axe $z$ et dont la composante sur cet axe est constante, soit $\bm{\omega}=\omega_z{\bm z}$.
 
-On s'interesse désormais à l'équation suivante pour la précession du moment 
-magnétique représenté par le vecteur $\bf{M} \in \mathbf{R}^3$, en fonction de la 
-constante réelle $\lambda$ sans dimension, et du vecteur 
-$\displaystyle{\bf{\omega} = \begin{pmatrix}
-    0 \\
-    0 \\
-    \omega_z
-  \end{pmatrix}}$
-représentant le champ magnétique.
+L'équation considérée prend le nom d'équation de precession avec un terme d'amortissement introduit par Gilbert~\cite{EquationGilbert} et s'écrit
 
 \begin{equation}
-    \frac{d\bf{M}}{dt} = \bf{\omega} \times (\bf{M}+\lambda \frac{d\bf{M}}{dt})
+    \frac{d\bm{M}}{dt} = (\bm{\omega}-\lambda \frac{d{\bm{M}}}{dt})\times\bm{M} 
     \label{eq:equation Gilbert}
 \end{equation}
 
+Cette équation vectorielle admet plusieures propriétés remarquables que nous allons exploiter.
 
-\section{Première approche : résolution de l'équation "projetée"}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Projection en coordonnées cartésiennes}
+\label{sec:projection_cartesiennes}
 
-En prenant le produit vectoriel à gauche des deux membres de l'équation, 
-on peut projetter cette équation différentielle sur le plan normal à $\bf{M}$,
-et obtenir une nouvelle équation qui  peut être représentée par les 3 
-équations différentielles scalaires suivantes (après un chagement d'échelle temporelle) :
-
+En prenant le produit vectoriel par $\bm M$ à gauche des deux membres de l'équation~\ref{eq:equation Gilbert}, on forme une projection sur un plan normal à $\bm{M}$, et on obtient 3 nouvelles équations différentielles scalaires (après un chagement d'échelle temporelle) :
 \begin{equation}
     \left\{
         \begin{aligned}
@@ -712,13 +710,15 @@ vers une solution
 
 \subsection{Résolution des équations sur Mx et My}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion et perspectives}
 \label{Conclusion}
 
 \begin{thebibliography}{2}
     \bibitem{BiduletMachin2020}{C.Bidule and A.Machin, Journal of Computer Power {\bf 12} 123 (2020)}
     \bibitem{TrucetChmuc2020}{C.Truc and T.Chmuc, (2020)}
+    \bibitem{EquationGilbert}{\href{https://fr.wikipedia.org/wiki/%C3%89quation_de_Landau-Lifshitz-Gilbert}{Wikipedia, Équation de Landau-Lifshitz-Gilbert
+    }}
 \end{thebibliography}
 
 

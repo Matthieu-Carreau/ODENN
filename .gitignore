@@ -136,4 +136,4 @@ save1.txt
 *.fdb_latexmk
 *.synctex.gz
 *.toc
-
+*.out
