@@ -12,4 +12,5 @@
 \contentsline {chapter}{\numberline {4}Equation de Précession et ajout du terme de Gilbert}{17}%
 \contentsline {section}{\numberline {4.1}Première approche : résolution de l'équation "projetée"}{17}%
 \contentsline {subsection}{\numberline {4.1.1}Résolution de l'équation sur $M_z$}{18}%
+\contentsline {subsection}{\numberline {4.1.2}Résolution des équations sur Mx et My}{20}%
 \contentsline {chapter}{\numberline {5}Conclusion et perspectives}{21}%

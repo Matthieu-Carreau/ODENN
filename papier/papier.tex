@@ -660,7 +660,7 @@ présentées en figure \ref{fig:minimums locaux Mz}.
        \label{fig:minimums locaux Mz}
 \end{figure}
 
-On peut valider cette hypothèse en exprimant analytiquement notre fonction d'erreur pour une fonction $M_z$ 
+On peut vérifier cette hypothèse en exprimant analytiquement notre fonction d'erreur pour une fonction $M_z$ 
 linéaire : $\forall \tilde{t} \in \mathbf{R}, \tilde{M_z}(\tilde{t}) = \mu  \tilde{t}$. On peut calculer notre erreur, 
 en fonction de $\mu$, en remplaçant la somme discrète par une intégrale qui peut être calculée facilement car 
 l'intégrande est alors une fonction polynomiale en $\tilde{t}$ :
@@ -700,6 +700,8 @@ en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations,
 avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
 L'erreur finale est de 0.018.
 
+Ainsi, la fonction Relu semble faciliter la convergence du réseau de neurones
+vers une solution 
 
 \begin{figure}
     \centering
@@ -708,6 +710,7 @@ L'erreur finale est de 0.018.
     \label{fig:relu apprentissage direct}
 \end{figure}
 
+\subsection{Résolution des équations sur Mx et My}
 
 
 \chapter{Conclusion et perspectives}
