@@ -48,7 +48,39 @@
 
 Ce rapport est le compte-rendu d'un stage d'un mois ayant pour objet la mise en place et l'implémentation de méthodes de résolution d'équations différentielles à l'aide de réseau de neurones. 
 Le problème physique étudié est celui de la précession d'un moment magnétique dans un champ magnétique, que l'on décrira dans un premier temps par l'équation de précession de Larmor~\cite{PrecessionLarmor}, puis par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}.
+Cette seconde version de l'équation ne possède pas de solution analytique connue, c'est pourquoi il est pertinent de se pencher sur des méthodes numériques pour en obtenir des solutions approchées.
 
+L'approche proposée ici consiste à utiliser des réseaux de neurones, connus pour leur capacité à approcher des fonctions~\cite{FunctionApproximation}, pour trouver des fonctions "proches" d'être solution d'une équation différentielle.
+On utilise par conséquent les réseaux de neurones à la manière de ~\cite{MLWithApp}, ~\cite{ANNforOPDEs} et ~\cite{HighOrderHybrid}, en utilisant les algorithmes d'optimisation connus pour minimiser une fonction d'erreur, qui indique dans quelle mesure une fonction candidate, construite à partir du réseau de neurones, est proche d'être solution.
+
+On écrira lorsque cela sera possible l'équation différentielle d'inconnue $\bm{M}:  \mathbb{R} \to  \mathbb{R}^n$ sous une forme similaire à la suivante, où $\bm{g}:  \mathbb{R}\times\mathbb{R}^n \to  \mathbb{R}^n$ est une foncion connue :
+
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \frac{d\bm{M}(t)}{dt} &= \bm{g}(t, \bm{M}(t)) \\
+            \bm{M}(0) &= \bm{M}_0
+        \end{aligned}
+    \right.
+\label{eq:equa dif example}
+\end{equation}
+
+La méthode consiste ensuite à construire une fonction candodate pour l'équation différentielle comme une somme de deux termes.
+le premier est un terme non ajustable vérifiant la condition initiale, et le deuxième dépendant des paramètres à entraîner représentés par le vecteur $\bm{P}$. Ce dernier est construit de façon à ne pas influencer la valeur initiale de la fonction, afin que la condition initiale soit toujours satisfaite, ceci étant réalisé grâce à une fonction $f:\mathcal{R}\to\mathcal{R}$ fixée à l'avance (souvent $f = id_{\mathcal{R}}$)
+
+\begin{equation}
+    \bm{\Tilde{M}}(t) = \bm{M}_0 + f(t)\mathcal{N}(t,\bm{P}) 
+\label{eq:solution candidate générique}
+\end{equation}
+    
+On définit ensuite une fonction d'erreur, que l'on calcule à partir de $N$ points $(t_i)_{i\in \llbracket 1, N \rrbracket}$ de l'intervalle d'étude, de la forme :
+
+\begin{equation}
+    E ({\bm P})= \sum_{i=1}^{N} (\frac{d\bm{\Tilde{M}}}{dt}(t_i) -g(t_i, \bm{\Tilde{M}}(t_i)))^2   
+\label{eq:fonction d'erreur générique}
+\end{equation}
+
+Il s'agira enfin d'utiliser différentes méthodes d'optimisation propres au réseaux de neurones afin de trouver un vecteur $\bm P$ qui minimise (et idéalement annule) cette fonction d'erreur.
 
 {
     \color{red}{Cette partie positionne le travail dans un contexte. Décrire le contexte. Dire ici ce que l'on doit faire et proposer un petit résumé des documents lus de façon à montrer en quoi ils sont pertients pour le problème posé.
@@ -255,11 +287,14 @@ Ainsi, l'équation de récurrence (\ref{eq:équation récurrence descente gradie
 \label{eq:équation récurrence descente gradients v2}
 \end{equation}
 
-On en déduit que la suite converge si et seulement si la norme $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ tend vers 0de le maximum du module des valeurs propres de la matrice $\mathcal{R}_\alpha = \mathcal{I}_H - \alpha \mathcal{M}$ est strictement inférieur à 1. De plus, elle convergera d'autant plus vite que ce maximum est faible.
+Pour s'assurer de la convergence de cette suite, on s'interresse au rayon spectral, c'est-à-dire le maximum du module des valeurs propres, de $\mathcal{R}_\alpha = (\mathcal{I}_H - \alpha \mathcal{M} )$, noté $\rho(\mathcal{R}_\alpha)$.
+La suite $(\bm{A}^{(n)})_{n\in \mathbb{N}}$ converge si et seulement si la norme de $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ tend vers 0. 
+Cela est le cas si et seulement si $\rho(\mathcal{R}_\alpha)<1$ ~\cite{WikiRayonSpectral}.
+De plus, elle convergera d'autant plus vite que son rayon spectral est faible.
 On trace donc ce maximum en fonction de $\alpha$ en figure \ref{fig:choix alpha 1D}. 
-On en déduit la valeur critique $\alpha_c = 6.2807.10^{-5}$, pour laquelle le maximum des modules vaut $1$, ainsi que la valeur $\alpha_{min} = 6.2189.10^{-5}$ pour laquelle le maximum des modules est minimum.
+On en déduit la valeur critique $\alpha_c = 6.2807.10^{-5}$, pour laquelle $\rho(\mathcal{R}_\alpha)=1$, ainsi que la valeur $\alpha_{min} = 6.2189.10^{-5}$ pour $\rho(\mathcal{R}_\alpha)$ est minimal.
 
-On éxécute l'algorithme en parallèle pour les deux valeurs de $\alpha$ trouvées précédemment ainsi que pour une valeur $\alpha_1 = 6.3.10^{-5}$, tel que le maximum des modules des valeurs propres de $\mathcal{R}_\alpha$ soit supérieur à 1.
+On éxécute l'algorithme en parallèle pour les deux valeurs de $\alpha$ trouvées précédemment ainsi que pour une valeur $\alpha_1 = 6.3.10^{-5}$, tel que $\rho(\mathcal{R}_\alpha)>1$
 On montre l'évolution de l'erreur en fonction du nombre d'itérations en figure \ref{fig:erreur selon alpha}. 
 On constate que $\alpha_{min}$ donne lieu à une décroissance exponentielle de l'erreur pendant les 2000 premières itérations, qui 
 devient ensuite stationnaire. 
@@ -280,7 +315,7 @@ elle correspond au cas limite entre les 2 cas précédents.
         \includegraphics[width=0.8\textwidth, height=0.8\textwidth]{choix_alpha_1D_zoom.jpg}
         \caption{Au voisinage de l'intersection avec 1}
     \end{subfigure}
-       \caption{Maximum des valeurs propres de $\mathcal{R}_\alpha$ en fonction de $\alpha$}
+       \caption{Rayon spectral de $\mathcal{R}_\alpha$ en fonction de $\alpha$}
        \label{fig:choix alpha 1D}
 \end{figure}
 
@@ -651,13 +686,14 @@ l'intégrande est alors une fonction polynomiale en $\tilde{t}$ :
 \end{equation}
 
 On remarque alors que cette fonction admet deux minimums locaux qui ont pour valeurs approchées : $ \mu_a \approx 0.696$, $E(\mu_a) \approx 3.04$ et $\mu_b \approx -0.574$,$ E(\mu_b) \approx -0.78$. 
-Cela est effectivement proche des valeurs que l'on obtient lors des entraînements montrés en figure \ref{fig:minimums locaux Mz}, en effet, sur le premier exemple, la sortie du réseau de neurones varie entre 0.60 et 0.74 sur l'intervalle étudié, et la valeur finale de l'erreur est 3.04, ce qui correspond à $\mu_b$ et $E(\mu_b)$.
-Et pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur vaut 0.82, ce qui correspond bien au second minimum local $E(\mu_a)$.
+Cela est effectivement proche des valeurs que l'on obtient lors des entraînements montrés en figure \ref{fig:minimums locaux Mz}.
+En effet, sur le premier exemple, la sortie du réseau de neurones varie entre 0.60 et 0.74 sur l'intervalle étudié, et la valeur finale de l'erreur est 3.04, ce qui correspond à $\mu_b$ et $E(\mu_b)$.
+Pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur vaut 0.82, ce qui correspond bien au second minimum local $E(\mu_a)$.
 
-On peut alors remettre en question le modèle choisit pour notre réseau de neurones, qui n'est pas forcément le plus adapté. 
-On peut par exemple essayer de changer les fonctions d'activations utilisées par les couches intermédiaires, qui étaient des sigmoïdes, et les remplacer par la fonction $relu$.
+On peut alors remettre en question le modèle choisi pour notre réseau de neurones, qui n'est pas forcément le plus adapté. 
+On peut par exemple essayer de changer les fonctions d'activation utilisées par les couches intermédiaires, qui étaient des sigmoïdes, et les remplacer par la fonction $relu$.
 
-On ainsi pu obtenir des résultats satisfaisants visibles en figure \ref{fig:relu apprentissage direct} en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
+On a ainsi pu obtenir des résultats satisfaisants visibles en figure \ref{fig:relu apprentissage direct} en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
 L'erreur finale est de 0.018.
 
 Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones.
@@ -686,6 +722,9 @@ Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones
     \bibitem{FunctionApproximation}{\href{https://dl.acm.org/doi/10.5555/1466915.1466916#}{Z.Zainuddin and P.Ong, WSEAS Transactions on Mathematics Volume {\bf7} Issue 6 pp 333–338(2008)}}
     \bibitem{WikiNN}{\href{https://en.wikipedia.org/wiki/Artificial_neural_network}{Wikipedia, Réseaux de neurones
     }}
+    \bibitem{WikiRayonSpectral}{\href{https://en.wikipedia.org/wiki/Spectral_radius#Power_sequence}{Wikipedia, Rayon spectral et suites des puissances
+    }}
+    
 \end{thebibliography}
 
 
