@@ -159,7 +159,7 @@ print("Extreme values of output after :",min(output), max(output))
 
 for epoch in range(epochs) :
     loss_value, grads = grad(model, training_points, y0, p)
-    optimizer.apply_gradients(zip(grads, model.trainable_variables))
+    optimi zer.apply_gradients(zip(grads, model.trainable_variables))
 
     if epoch % display_step == 0 :
         print("Loss after",epoch,"/",epochs,"epochs :",loss_value.numpy())
