@@ -12,7 +12,7 @@
 \usepackage{bm}
 \usepackage{hyperref}
 
-\title{Résolution d'équations différentielles par réseaux de neurones}
+\title{Résolution de l'équation de précession d'un moment magnétique par réseau de neurones}
 
 \author{
   Matthieu Carreau\\
@@ -88,8 +88,7 @@ Cela nous permettra par la suite d'évaluer nos solutions numériques, en les co
 \section{Solutions en séries de Fourier}
 
 On cherche des solutions numériques approchées de l'équation~(\ref{eq:equa dif}) sous la forme de séries de Fourier tronquées avec $H$ harmoniques.
-On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux termes, le premier $M_0$ constant non ajustable vérifiant la condition initiale, et 
-le deuxième $\mathcal{N}(t,\bm{A})$ dépendant des coefficients $(A_m)_{H\in \llbracket 1,H \rrbracket}$ représentés par le vecteur $\bm{A}$, construit de façon à ne pas influencer la valeur initiale de la fonction.
+On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux termes, le premier $M_0$ constant non ajustable vérifiant la condition initiale, et le deuxième $\mathcal{N}(t,\bm{A})$ dépendant des coefficients $(A_m)_{H\in \llbracket 1,H \rrbracket}$ représentés par le vecteur $\bm{A}$, construit de façon à ne pas influencer la valeur initiale de la fonction.
 
 \begin{equation}
 \left\{
@@ -111,8 +110,7 @@ On définit une fonction d'erreur pour ces solutions potentielles, à partir de 
 \label{eq:fonction d'erreur}
 \end{equation}
 
-On cherche à présent le minimum de $E$ en tant que fonction de $\bm{A}$. Une condition nécessaire sur $\bm{A}$ pour être un antécédent d'un minimum
-est 
+On cherche à présent le minimum de $E$ en tant que fonction de $\bm{A}$. Une condition nécessaire sur $\bm{A}$ pour être un antécédent d'un minimum est 
 \begin{equation}
     {\forall l \in\llbracket 1,H \rrbracket, \frac{\partial E}{\partial A_l} = 0}
     \label{eq:condition nécessaire A_l}
@@ -128,8 +126,7 @@ Or ces dérivées partielles sont données pour $l \in \llbracket 1,H \rrbracket
 \end{equation}
 
 
-Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ qui vérifient la condition \ref{eq:condition nécessaire A_l}, et de vérifier que le vecteur de coefficients
-trouvé correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = -\frac{1}{2\pi}\delta _1 ^m $.
+Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ qui vérifient la condition \ref{eq:condition nécessaire A_l}, et de vérifier que le vecteur de coefficients trouvé correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = -\frac{1}{2\pi}\delta _1 ^m $.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,8 +163,7 @@ $\displaystyle{\forall l \in\llbracket 1,H \rrbracket, \frac{\partial E}{\partia
 \label{eq:définition coefficients}
 \end{equation}
 
-On souhaite alors résoudre le système linéaire en écrivant 
-l'équation matricielle le représentant, c'est-à-dire :
+On souhaite alors résoudre le système linéaire en écrivant l'équation matricielle le représentant, c'est-à-dire :
 
 \begin{equation}
     \mathcal{M} \bm{A} = \bm{b} \Leftrightarrow \bm{A} = \mathcal{M}^{-1}\bm{b}
@@ -176,14 +172,13 @@ l'équation matricielle le représentant, c'est-à-dire :
 
 On réalise l'implémentation en python, en instanciant 
 les matrices définies précédemment et à l'aide de la bibliothèque \emph{numpy}. 
-On peut constater que la matrice $\mathcal{M}$ n'est pas toujours inversible
-selon le choix de $H$ et $N$. En effet, on peut montrer {\color{red}(à rajouter en annexe)} que c'est nécessairement le cas lorsque $H>N$, 
-mais on remarque également qu'elle ne l'est pas non plus lorsque $H$ et $N$ sont proches par exemple pour $H=N=10$. Il serait interressant d'approfondir ce point
-pour savoir si cela se traduit par le fait que $E$ admette plusieurs minimums locaux par exemple.
-Il semble que choisir $N\gg H$ soit suffisant pour que $\mathcal{M}$ soit inversible. On choisira alors $H=10, N=100$ pour la suite.
+On peut constater que la matrice $\mathcal{M}$ n'est pas toujours inversible selon le choix de $H$ et $N$. 
+En effet, on peut montrer {\color{red}(à rajouter en annexe)} que c'est nécessairement le cas lorsque $H>N$, mais on remarque également qu'elle ne l'est pas non plus lorsque $H$ et $N$ sont proches par exemple pour $H=N=10$. 
+Il serait interressant d'approfondir ce point pour savoir si cela se traduit par le fait que $E$ admette plusieurs minimums locaux par exemple.
+Il semble que choisir $N\gg H$ soit suffisant pour que $\mathcal{M}$ soit inversible. 
+On choisira alors $H=10, N=100$ pour la suite.
 On obtient alors les coefficients présentés en figure \ref{fig:résultats 1 inv} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
-On constate que les erreurs sur chaque coefficient
-est inférieure à $10^{-16}$, on valide donc cette première méthode.
+On constate que les erreurs sur chaque coefficient est inférieure à $10^{-16}$, on valide donc cette première méthode.
 
 
 \begin{figure}
@@ -236,6 +231,7 @@ Puis on calcule itérativement :
 
 On cherche à trouver le coefficient $\alpha$ optimal qui assure la convergence tout en maximisant la vitesse de convergence.
 On exprime tout d'abord le gradient en fonction de la matrice $\mathcal{M}$ et du vecteur $\bm{b}$ définis précédemment qui sont indépendants de $\bm{A}$ et de $k$:
+
 \begin{equation}
     \bm{g}^{(k)} = \mathcal{M}\bm{A}^{(k)} - \bm{b}
 \label{eq:expression matricielle gradient}
@@ -248,19 +244,16 @@ Ainsi, l'équation de récurrence (\ref{eq:équation récurrence descente gradie
 \label{eq:équation récurrence descente gradients v2}
 \end{equation}
 
-On en déduit que la suite converge si et seulement si la norme $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ tend vers 0de le maximum du module des valeurs propres de la matrice
-$\mathcal{R}_\alpha = \mathcal{I}_H - \alpha \mathcal{M}$ est strictement inférieur à 1. De plus, elle convergera
-d'autant plus vit que ce maximum est faible.
+On en déduit que la suite converge si et seulement si la norme $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ tend vers 0de le maximum du module des valeurs propres de la matrice $\mathcal{R}_\alpha = \mathcal{I}_H - \alpha \mathcal{M}$ est strictement inférieur à 1. De plus, elle convergera d'autant plus vite que ce maximum est faible.
 On trace donc ce maximum en fonction de $\alpha$ en figure \ref{fig:choix alpha 1D}. 
-On en déduit la valeur critique $\alpha_c = 6.2807.10^{-5}$, pour laquelle le maximum des modules vaut $1$, ainsi que la 
-valeur $\alpha_{min} = 6.2189.10^{-5}$ pour laquelle le maximum des modules est minimum.
+On en déduit la valeur critique $\alpha_c = 6.2807.10^{-5}$, pour laquelle le maximum des modules vaut $1$, ainsi que la valeur $\alpha_{min} = 6.2189.10^{-5}$ pour laquelle le maximum des modules est minimum.
 
-On éxécute l'algorithme en parallèle pour les deux valeurs de $\alpha$ trouvées précédemment ainsi que pour une valeur 
-$\alpha_1 = 6.3.10^{-5}$, tel que le maximum des modules des valeurs propres de $\mathcal{R}_\alpha$ soit supérieur à 1.
-On montre l'évolution de l'erreur en fonction du nombre d'itérations en figure \ref{fig:erreur selon alpha}. On constate 
-que $\alpha_{min}$ donne lieu à une décroissance exponentielle de l'erreur pendant les 2000 premières itérations, qui 
-devient ensuite stationnaire. Tandis que $\alpha_1$ donne une erreur qui croît exponentiellement car la norme de 
-$(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ diverge exponentiellement. La valeur $\alpha_c$ donne une erreur constante, 
+On éxécute l'algorithme en parallèle pour les deux valeurs de $\alpha$ trouvées précédemment ainsi que pour une valeur $\alpha_1 = 6.3.10^{-5}$, tel que le maximum des modules des valeurs propres de $\mathcal{R}_\alpha$ soit supérieur à 1.
+On montre l'évolution de l'erreur en fonction du nombre d'itérations en figure \ref{fig:erreur selon alpha}. 
+On constate que $\alpha_{min}$ donne lieu à une décroissance exponentielle de l'erreur pendant les 2000 premières itérations, qui 
+devient ensuite stationnaire. 
+Tandis que $\alpha_1$ donne une erreur qui croît exponentiellement car la norme de $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ diverge exponentiellement. 
+La valeur $\alpha_c$ donne une erreur constante, 
 elle correspond au cas limite entre les 2 cas précédents.
 
 \begin{figure}
@@ -289,10 +282,8 @@ elle correspond au cas limite entre les 2 cas précédents.
     \end{figure}
 
 
-On retient donc les résultats obtenus pour $\alpha_{min}$ que l'on montre en figure
- \ref{fig:résultats 1 DG} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
-On constate que les erreurs sur chaque coefficient
-est inférieure à $10^{-16}$, on valide donc cette seconde méthode.
+On retient donc les résultats obtenus pour $\alpha_{min}$ que l'on montre en figure \ref{fig:résultats 1 DG} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
+On constate que les erreurs sur chaque coefficientest inférieure à $10^{-16}$, on valide donc cette seconde méthode.
 
 
 \begin{figure}
@@ -352,8 +343,7 @@ On calcule ensuite les expressions analytiques des dérivées partielles de $E(\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Résultats obtenus}
-On initialise l'algorithme avec les paramètres suivants :
-$(H=4, N=20)$
+On initialise l'algorithme avec les paramètres suivants : $(H=4, N=20)$
 On obtient une erreur de $1,2.10^{-2}$ et une estimation visible en figure \ref{fig:resultat_NN}. Cela permet de valider notre modèle sur l'étude à une dimension.
 
 \begin{figure}
@@ -422,9 +412,7 @@ On définit une fonction d'erreur pour ces solutions potentielles, en s'interres
 On utilise ensuite la méthode de descente de gradients définie précédemment, en calculant les dérivées partielles suivantes :
 $(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,H \rrbracket}$
 
-On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bm{P}$ comme la concaténation des 
-vecteurs $\bm{A}$ et $\bm{B}$ et le vecteur $\bm{g}$ comme le vecteur contenant les dérivées  partielles de $E$
-par rapport à chaque composante de $\bm{P}$. 
+On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bm{P}$ comme la concaténation des vecteurs $\bm{A}$ et $\bm{B}$ et le vecteur $\bm{g}$ comme le vecteur contenant les dérivées  partielles de $E$ par rapport à chaque composante de $\bm{P}$. 
 
 \begin{equation}
     \bm{P}^{(k)} = \begin{pmatrix}
@@ -446,8 +434,7 @@ par rapport à chaque composante de $\bm{P}$.
 \label{eq:définition descente de gradients 2D}
 \end{equation}
 
-Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2H$ ainsi qu'un nouveau vecteur $\bm{b}$ de taille $2H$ tels que les 
-équations définissant la descente de gradients soient les suivantes :
+Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2H$ ainsi qu'un nouveau vecteur $\bm{b}$ de taille $2H$ tels que les équations définissant la descente de gradients soient les suivantes :
 
 \begin{equation}
     \bm{P}^{(k+1)} = \bm{P}^{(k)} - \alpha\bm{g}^{(k)} 
@@ -464,11 +451,8 @@ Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2H$ ainsi qu'un nouv
 \label{eq:équation récurrence descente gradients v2 2D}
 \end{equation}
 
-On réalise la même étude qu'en dimension 1 pour la recherche du coefficient $\alpha_{min}$ qui minimise le maximum
-des modules des valeurs propres de $\mathcal{R}_\alpha = \mathcal{I}_H - \alpha \mathcal{M}$, ainsi que le coefficient 
-$\alpha_c$ à ne pas dépasser, à partir duquel ce maximum et supérieur à 1 et la suite diverge.
-On trouve les valeurs suivantes $\alpha_{min} = 6.0906.10^{-6}$ et $\alpha_c = 6.1146.10^{-6}$,  et l'évolution du 
-maximum en fonction de $\alpha$ est montré en figure \ref{fig:choix_alpha_2D}.
+On réalise la même étude qu'en dimension 1 pour la recherche du coefficient $\alpha_{min}$ qui minimise le maximum des modules des valeurs propres de $\mathcal{R}_\alpha = \mathcal{I}_H - \alpha \mathcal{M}$, ainsi que le coefficient $\alpha_c$ à ne pas dépasser, à partir duquel ce maximum et supérieur à 1 et la suite diverge.
+On trouve les valeurs suivantes $\alpha_{min} = 6.0906.10^{-6}$ et $\alpha_c = 6.1146.10^{-6}$,  et l'évolution du maximum en fonction de $\alpha$ est montré en figure \ref{fig:choix_alpha_2D}.
 
 
 \begin{figure}
@@ -477,10 +461,8 @@ maximum en fonction de $\alpha$ est montré en figure \ref{fig:choix_alpha_2D}.
     \caption{\label{fig:choix_alpha_2D}Evolution du maximum du module en fonction de $\alpha$}
 \end{figure}
 
-On éxécute l'algorithme en choisissant la valeur $\alpha_{min}$ précédente et on montre l'évolution de 
-l'erreur en fonction du nombre d'itérations en figure \ref{fig:Erreur_2_DG}. 
-On constate comme dans le cas à 1 dimension que $\alpha_{min}$ donne lieu à une décroissance exponentielle de l'erreur, 
-cette fois pendant les 4500 premières itérations, qui devient ensuite quasiment stationnaire, de l'ordre de $10^{-25}$.
+On éxécute l'algorithme en choisissant la valeur $\alpha_{min}$ précédente et on montre l'évolution de l'erreur en fonction du nombre d'itérations en figure \ref{fig:Erreur_2_DG}. 
+On constate comme dans le cas à 1 dimension que $\alpha_{min}$ donne lieu à une décroissance exponentielle de l'erreur, cette fois pendant les 4500 premières itérations, qui devient ensuite quasiment stationnaire, de l'ordre de $10^{-25}$.
 
 \begin{figure}
     \centering
@@ -488,10 +470,8 @@ cette fois pendant les 4500 premières itérations, qui devient ensuite quasimen
     \caption{\label{fig:Erreur_2_DG}Valeur de la fonction d'erreur en fonction du nombre d'itérations}
 \end{figure}
 
-Les coefficients finaux de $\bm{P}$ ainsi que les valeurs absolues de leurs erreurs sont représentées 
-en figure \ref{fig:résultats 2 DG}.
-On peut constater que l'on retrouve bien les coefficients attendus, avec une erreur au maximum de 
-l'ordre de $10^{-15}$.
+Les coefficients finaux de $\bm{P}$ ainsi que les valeurs absolues de leurs erreurs sont représentées en figure \ref{fig:résultats 2 DG}.
+On peut constater que l'on retrouve bien les coefficients attendus, avec une erreur au maximum de l'ordre de $10^{-15}$.
 
 \begin{figure}
     \centering
@@ -512,16 +492,10 @@ l'ordre de $10^{-15}$.
 
 \section{Solutions aprochées par un réseau de neurones}
 
-On cherche dans ce paragraphe à approcher la solution du système des 2 équations
-grâce à un réseau de neurones.
+On cherche dans ce paragraphe à approcher la solution du système des 2 équations grâce à un réseau de neurones.
 On choisit l'architecture suivante pour le réseau de neurones : 
-1 entrée pour la variable temporelle, une première couche intermédiaire de 
-$h_1=32$ neurones, une seconde couche intermédiaire de $h_2=8$ neurones, toutes 
-deux utilisant la sigmoïde définie précédement comme fonction d'activation, 
-et enfin 2 neurones de sortie connectées à la deuxième couche intermédiaire, avec 
-l'idientité comme fonction d'activation en sortie.
-On note les sorties de ces deux derniers neurones respectivement $\mathcal{N}_x(t, \bm{P})$
-et $\mathcal{N}_y(t, \bm{P})$, où $\bm{P}$ représente l'ensemble des paramètres du réseau de neurones.
+1 entrée pour la variable temporelle, une première couche intermédiaire de $h_1=32$ neurones, une seconde couche intermédiaire de $h_2=8$ neurones, toutes deux utilisant la sigmoïde définie précédement comme fonction d'activation, et enfin 2 neurones de sortie connectées à la deuxième couche intermédiaire, avec l'identité comme fonction d'activation en sortie.
+On note les sorties de ces deux derniers neurones respectivement $\mathcal{N}_x(t, \bm{P})$ et $\mathcal{N}_y(t, \bm{P})$, où $\bm{P}$ représente l'ensemble des paramètres du réseau de neurones.
 On construit alors nos solutions approchées de la façon suivante :
 
 \begin{equation}
@@ -534,8 +508,7 @@ On construit alors nos solutions approchées de la façon suivante :
     \label{eq:solution 2_NN}
     \end{equation}
 
-On définit une fonction d'erreur pour ces solutions potentielles, 
-en s'interressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$: 
+On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$: 
 $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 
 \begin{equation}
@@ -544,12 +517,9 @@ $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 \end{equation}
 
 
-On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.007,
-50000 itérations, et on lance 3 entraînements pour $N \in \{10,40,100\}$. On obtient les résultats montrés 
-en figure \ref{fig:résultats 2 NN en fonction de N}, où l'axe vertical représente le temps,
-et les axes horizontaux représentent $M_x$ et $M_y$. La solution analytique est représentée 
-en orange, la solution approchée est représentée en bleu, et les points rouges sont les
-points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
+On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.007,50000 itérations, et on lance 3 entraînements pour $N \in \{10,40,100\}$. 
+On obtient les résultats montrés en figure \ref{fig:résultats 2 NN en fonction de N}, où l'axe vertical représente le temps, et les axes horizontaux représentent $M_x$ et $M_y$. 
+La solution analytique est représentée en orange, la solution approchée est représentée en bleu, et les points rouges sont les points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
 
 
 \begin{figure}
@@ -608,8 +578,7 @@ En prenant le produit vectoriel par $\bm M$ à gauche des deux membres de l'équ
     \label{eq:equations scalaires Gilbert}
 \end{equation}
 
-On remarque que l'équation sur $M_z$ est découplée des 2 autres, on cherche ainsi à résoudre
-celle-ci en premier lieu.
+On remarque que l'équation sur $M_z$ est découplée des 2 autres, on cherche ainsi à résoudre celle-ci en premier lieu.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Résolution de l'équation sur $M_z$}
@@ -619,8 +588,7 @@ On utilise la même approche avec un réseau de neurones que précédemment à l
 On réalisera à présent les implémentations en python à l'aide de la bibliothèque TensorFlow.
 
 On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $\bm{P}$.
-Comme précédemment, afin de satisfaire la condition initiale, on cherche les fonction $\tilde{M_z}$
-sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},\bm{P})$ représente la sortie du réseau de neurones.
+Comme précédemment, afin de satisfaire la condition initiale, on cherche les fonction $\tilde{M_z}$ sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},\bm{P})$ représente la sortie du réseau de neurones.
 
 \begin{equation}
     \Tilde{M_z}(\Tilde{t}) = M_z(0) +\Tilde{t} {\mathcal{N}}(\Tilde{t},\bm{P}) 
@@ -633,14 +601,10 @@ On définit la fonction d'erreur suivante :
 On fixe les paramètres suivants : $\lambda = 0.3$, nombre de points de tests : $N=30$, 
 intervalle d'étude : $[t_a = -1, t_b = 1]$, $M_z(0) = 0$.
 Lors des essais d'entraînement du modèle on fait face à plusieurs problèmes.
-On remarque que souvent la sortie du réseau de neurones est quasiment constante
-sur l'intervalle d'étude. Ainsi, il semble que l'entraînement ne consiste alors dans ce 
-cas qu'à ajuster cette valeur constante pour minimser la fonction d'erreur dans le cas 
-où $M_z$ est linéaire par rapport à $\tilde{t}$, (d'après l'équation \ref{eq:solution NN Mz},
-pour ${\mathcal{N}}(\Tilde{t},\bm{P}) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
+On remarque que souvent la sortie du réseau de neurones est quasiment constantesur l'intervalle d'étude. 
+Ainsi, il semble que l'entraînement ne consiste alors dans ce cas qu'à ajuster cette valeur constante pour minimser la fonction d'erreur dans le cas où $M_z$ est linéaire par rapport à $\tilde{t}$, (d'après l'équation \ref{eq:solution NN Mz},pour ${\mathcal{N}}(\Tilde{t},\bm{P}) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
 
-Après plusieurs essais d'entraînement, on remarque que l'on tombe sur l'une ou l'autre des 2 solutions
-présentées en figure \ref{fig:minimums locaux Mz}.
+Après plusieurs essais d'entraînement, on remarque que l'on tombe sur l'une ou l'autre des 2 solutions présentées en figure \ref{fig:minimums locaux Mz}.
 
 \begin{figure}
     \centering
@@ -659,9 +623,8 @@ présentées en figure \ref{fig:minimums locaux Mz}.
        \label{fig:minimums locaux Mz}
 \end{figure}
 
-On peut vérifier cette hypothèse en exprimant analytiquement notre fonction d'erreur pour une fonction $M_z$ 
-linéaire : $\forall \tilde{t} \in \mathbf{R}, \tilde{M_z}(\tilde{t}) = \mu  \tilde{t}$. On peut calculer notre erreur, 
-en fonction de $\mu$, en remplaçant la somme discrète par une intégrale qui peut être calculée facilement car 
+On peut vérifier cette hypothèse en exprimant analytiquement notre fonction d'erreur pour une fonction $M_z$ linéaire : $\forall \tilde{t} \in \mathbf{R}, \tilde{M_z}(\tilde{t}) = \mu  \tilde{t}$. 
+On peut calculer notre erreur, en fonction de $\mu$, en remplaçant la somme discrète par une intégrale qui peut être calculée facilement car 
 l'intégrande est alors une fonction polynomiale en $\tilde{t}$ :
 
 \begin{equation}
@@ -676,30 +639,17 @@ l'intégrande est alors une fonction polynomiale en $\tilde{t}$ :
     \label{eq:fonction d'erreur analytique, M_z linéaire}
 \end{equation}
 
-On remarque alors que cette fonction admet deux minimums locaux qui ont pour valeurs
-approchées : $ \mu_a \approx 0.696$, $E(\mu_a) \approx 3.04$ et 
-$\mu_b \approx -0.574$,$ E(\mu_b) \approx -0.78$. 
-Cela est effectivement proche des valeurs que l'on obtient lors des 
-entraînements montrés en figure \ref{fig:minimums locaux Mz}, en effet, sur le premier exemple,
-la sortie du réseau de neurones varie entre 0.60 et 0.74 sur l'intervalle étudié, et
-la valeur finale de l'erreur est 3.04, ce qui correspond à $\mu_b$ et $E(\mu_b)$.
-Et pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur 
-vaut 0.82, 
-ce qui correspond bien au second minimum local $E(\mu_a)$.
+On remarque alors que cette fonction admet deux minimums locaux qui ont pour valeurs approchées : $ \mu_a \approx 0.696$, $E(\mu_a) \approx 3.04$ et $\mu_b \approx -0.574$,$ E(\mu_b) \approx -0.78$. 
+Cela est effectivement proche des valeurs que l'on obtient lors des entraînements montrés en figure \ref{fig:minimums locaux Mz}, en effet, sur le premier exemple, la sortie du réseau de neurones varie entre 0.60 et 0.74 sur l'intervalle étudié, et la valeur finale de l'erreur est 3.04, ce qui correspond à $\mu_b$ et $E(\mu_b)$.
+Et pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur vaut 0.82, ce qui correspond bien au second minimum local $E(\mu_a)$.
 
-On peut alors remettre en question le modèle choisit pour notre 
-réseau de neurones, qui n'est pas forcément le plus adapté. On peut
-par exemple essayer de changer les fonctions d'activations utilisées
-par les couches intermédiaires, qui étaient des sigmoïdes, et les 
-remplacer par la fonction $relu$.
+On peut alors remettre en question le modèle choisit pour notre réseau de neurones, qui n'est pas forcément le plus adapté. 
+On peut par exemple essayer de changer les fonctions d'activations utilisées par les couches intermédiaires, qui étaient des sigmoïdes, et les remplacer par la fonction $relu$.
 
-On ainsi pu obtenir des résultats satisfaisants visibles en figure 
-\ref{fig:relu apprentissage direct}
-en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, 
-avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
+On ainsi pu obtenir des résultats satisfaisants visibles en figure \ref{fig:relu apprentissage direct} en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
 L'erreur finale est de 0.018.
 
-Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones
+Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones.
 
 \begin{figure}
     \centering
@@ -715,11 +665,15 @@ Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones
 \label{Conclusion}
 
 \begin{thebibliography}{2}
-    \bibitem{BiduletMachin2020}{C.Bidule and A.Machin, Journal of Computer Power {\bf 12} 123 (2020)}
-    \bibitem{TrucetChmuc2020}{C.Truc and T.Chmuc, (2020)}
     \bibitem{EquationGilbert}{\href{https://fr.wikipedia.org/wiki/%C3%89quation_de_Landau-Lifshitz-Gilbert}{Wikipedia, Équation de Landau-Lifshitz-Gilbert
     }}
     \bibitem{PrecessionLarmor}{\href{https://fr.wikipedia.org/wiki/Pr%C3%A9cession_de_Larmor}{Wikipedia, Précession de Larmor
+    }}
+    \bibitem{MLWithApp}{\href{https://doi.org/10.1016/j.mlwa.2021.100058}{T.T.Dufera, Machine Learning With Applications {\bf5} 100058 (2021)}}
+    \bibitem{ANNforOPDEs}{\href{https://doi.org/10.1109/72.712178}{I. E. Lagaris, A. Likas and D. I. Fotiadis, IEEE Transactions on Neural Networks {\bf9} no. 5 pp. 987-1000 (1998)}}
+    \bibitem{HighOrderHybrid}{\href{https://doi.org/10.1016/j.amc.2006.05.068}{A.Malek * and R.Shekari Beidokhti, Applied Mathematics and Computation {\bf183} 260–271(2006)}}
+    \bibitem{FunctionApproximation}{\href{https://dl.acm.org/doi/10.5555/1466915.1466916#}{Z.Zainuddin and P.Ong, WSEAS Transactions on Mathematics Volume {\bf7} Issue 6 pp 333–338(2008)}}
+    \bibitem{WikiNN}{\href{https://en.wikipedia.org/wiki/Artificial_neural_network}{Wikipedia, Réseaux de neurones
     }}
 \end{thebibliography}
 
