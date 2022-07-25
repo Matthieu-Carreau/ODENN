@@ -62,21 +62,21 @@ Le problème physique étudié est celui de la précession d'un moment magnétiq
 \chapter{Equation différentielle d'ordre 1}
 \label{section_ode_1}
 
-Soit $\Psi$ une fonction réelle à une variable dont la solution satisfait l'équation différentielle suivante, où $\psi_0$ désigne la valeur initiale de la fonction.
+Soit $M$ une fonction réelle à une variable satisfaisant l'équation différentielle suivante, où $M_0$ désigne la valeur initiale de la fonction.
 
 \begin{equation}
 \left\{
     \begin{aligned}
-        \frac{d\Psi(x)}{dx} + \cos(2\pi x) &= 0 \\
-        \Psi(0) &= \psi_0
+        \frac{dM(t)}{dt} + \cos(2\pi t) &= 0 \\
+        M(0) &= M_0
     \end{aligned}
 \right.
 \label{eq:equa dif}
 \end{equation}
-On cherche à tester les méthodes présentées dans la section~\ref{Introduction} sur l'équation~(\ref{eq:equa dif}), pour tout $x\in [0,1]$.
-L'équation~(\ref{eq:equa dif}) et sa condition initiale donnée en $x=0$, admet une solution analytique unique qui s'écrit
+On cherche à tester les méthodes présentées dans la section~\ref{Introduction} sur l'équation~(\ref{eq:equa dif}), pour tout $t\in [t_a=0,t_b=1]$.
+L'équation~(\ref{eq:equa dif}) et sa condition initiale donnée en $t=0$, admet une solution analytique unique qui s'écrit
 \begin{equation}
-    {\Psi}(x) = \psi_0 - \frac{1}{2\pi}\sin(2\pi x)
+    {M}(t) = M_0 - \frac{1}{2\pi}\sin(2\pi t)
     \label{eq:solution analytique}
 \end{equation}
 
@@ -87,15 +87,15 @@ Cela nous permettra par la suite d'évaluer nos solutions numériques, en les co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Solutions en séries de Fourier}
 
-On cherche des solutions numériques approchées de l'équation~(\ref{eq:equa dif}) sous la forme de séries de Fourier tronquées avec $M$ harmoniques.
-On écrit pour cela la solution approchée $\Tilde{\Psi}$ comme la somme de deux termes, le premier $\psi_0$ constant non ajustable vérifiant la condition initiale, et 
-le deuxième $\mathcal{N}(x,\bm{A})$ dépendant des coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ représentés par le vecteur $\bm{A}$, construit de façon à ne pas influencer la valeur initiale de la fonction.
+On cherche des solutions numériques approchées de l'équation~(\ref{eq:equa dif}) sous la forme de séries de Fourier tronquées avec $H$ harmoniques.
+On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux termes, le premier $M_0$ constant non ajustable vérifiant la condition initiale, et 
+le deuxième $\mathcal{N}(t,\bm{A})$ dépendant des coefficients $(A_m)_{H\in \llbracket 1,H \rrbracket}$ représentés par le vecteur $\bm{A}$, construit de façon à ne pas influencer la valeur initiale de la fonction.
 
 \begin{equation}
 \left\{
     \begin{aligned}
-        \Tilde{\Psi}(x) &= \psi_0 + {\mathcal{N}}(x,\bm{A}) \\
-        {\mathcal{N}}(x,\bm{A}) &= \sum_{m=1}^{M} A_m \sin(2\pi m x) 
+        \Tilde{M}(t) &= M_0 + {\mathcal{N}}(t,\bm{A}) \\
+        {\mathcal{N}}(t,\bm{A}) &= \sum_{m=1}^{H} A_m \sin(2\pi m t) 
     \end{aligned}
 \right.
 \label{eq:solution Fourier}
@@ -104,53 +104,53 @@ le deuxième $\mathcal{N}(x,\bm{A})$ dépendant des coefficients $(A_m)_{m\in \l
 
 
 
-On définit une fonction d'erreur pour ces solutions potentielles, à partir de la valeur de la dérivée de $\Tilde{\Psi}$ aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, x_i = \frac{i-1}{N} $
+On définit une fonction d'erreur pour ces solutions potentielles, à partir de la valeur de la dérivée de $\Tilde{M}$ aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $
 
 \begin{equation}
-    E = \frac{1}{2}\sum_{i=1}^{N}(\sum_{m=1}^{M} 2\pi m A_m \cos(2\pi m x_i)+\cos(2\pi x_i))^2 
+    E = \frac{1}{2}\sum_{i=1}^{N}(\sum_{m=1}^{H} 2\pi m A_m \cos(2\pi m t_i)+\cos(2\pi t_i))^2 
 \label{eq:fonction d'erreur}
 \end{equation}
 
 On cherche à présent le minimum de $E$ en tant que fonction de $\bm{A}$. Une condition nécessaire sur $\bm{A}$ pour être un antécédent d'un minimum
 est 
 \begin{equation}
-    {\forall l \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0}
+    {\forall l \in\llbracket 1,H \rrbracket, \frac{\partial E}{\partial A_l} = 0}
     \label{eq:condition nécessaire A_l}
 \end{equation}
 
-Or ces dérivées partielles sont données pour $l \in \llbracket 1,M \rrbracket$ par :
+Or ces dérivées partielles sont données pour $l \in \llbracket 1,H \rrbracket$ par :
 
 \begin{equation}
     \frac{\partial E}{\partial A_l} = 
-    \sum_{i=1}^{N}(\sum_{m=1}^{M} 2\pi m A_m \cos(2\pi m x_i)+\cos(2\pi x_i))
-    2\pi l \cos(2\pi l x_i)
+    \sum_{i=1}^{N}(\sum_{m=1}^{H} 2\pi m A_m \cos(2\pi m t_i)+\cos(2\pi t_i))
+    2\pi l \cos(2\pi l t_i)
 \label{eq:gradient}
 \end{equation}
 
 
-Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ qui vérifient la condition \ref{eq:condition nécessaire A_l}, et de vérifier que le vecteur de coefficients
-trouvé correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,M \rrbracket, A_m = -\frac{1}{2\pi}\delta _1 ^m $.
+Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ qui vérifient la condition \ref{eq:condition nécessaire A_l}, et de vérifier que le vecteur de coefficients
+trouvé correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = -\frac{1}{2\pi}\delta _1 ^m $.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Première méthode : inversion d'un système linéaire}
 
 On cherche à résoudre le système linéaire donné par : 
-$\displaystyle{\forall l \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0}$, on définit pour cela les matrices suivantes :
+$\displaystyle{\forall l \in\llbracket 1,H \rrbracket, \frac{\partial E}{\partial A_l} = 0}$, on définit pour cela les matrices suivantes :
 
 \begin{equation}
-    \mathcal{M} = (r_{m,l})_{(m,l)\in \llbracket 1, M\rrbracket ^2}, 
+    \mathcal{M} = (r_{m,l})_{(m,l)\in \llbracket 1, H\rrbracket ^2}, 
     \bm{A} = \begin{pmatrix}
                 A_1 \\
                 A_2 \\
                 \vdots \\
-                A_M
+                A_H
               \end{pmatrix}, 
     \bm{b} = \begin{pmatrix}
                 b_1 \\
                 b_2 \\
                 \vdots \\
-                b_M
+                b_H
               \end{pmatrix}
 \label{eq:définition notation}
 \end{equation}
@@ -159,8 +159,8 @@ $\displaystyle{\forall l \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partia
 \forall (m,l) \in \llbracket 1, N\rrbracket ^2,
 \left\{
     \begin{aligned}
-        r_{m,l} &= 2\pi ml \sum_{i=1}^{N}\cos(2\pi mx_i)\cos(2\pi lx_i) \\
-        b_l &= -l\sum_{i=1}^{N}\cos(2\pi x_i)\cos(2\pi lx_i)
+        r_{m,l} &= 2\pi ml \sum_{i=1}^{N}\cos(2\pi mt_i)\cos(2\pi lt_i) \\
+        b_l &= -l\sum_{i=1}^{N}\cos(2\pi t_i)\cos(2\pi lt_i)
     \end{aligned}
 \right.
 \label{eq:définition coefficients}
@@ -177,10 +177,10 @@ l'équation matricielle le représentant, c'est-à-dire :
 On réalise l'implémentation en python, en instanciant 
 les matrices définies précédemment et à l'aide de la bibliothèque \emph{numpy}. 
 On peut constater que la matrice $\mathcal{M}$ n'est pas toujours inversible
-selon le choix de $M$ et $N$. En effet, on peut montrer {\color{red}(à rajouter en annexe)} que c'est nécessairement le cas lorsque $M>N$, 
-mais on remarque également qu'elle ne l'est pas non plus lorsque $M$ et $N$ sont proches par exemple pour $M=N=10$. Il serait interressant d'approfondir ce point
+selon le choix de $H$ et $N$. En effet, on peut montrer {\color{red}(à rajouter en annexe)} que c'est nécessairement le cas lorsque $H>N$, 
+mais on remarque également qu'elle ne l'est pas non plus lorsque $H$ et $N$ sont proches par exemple pour $H=N=10$. Il serait interressant d'approfondir ce point
 pour savoir si cela se traduit par le fait que $E$ admette plusieurs minimums locaux par exemple.
-Il semble que choisir $N\gg M$ soit suffisant pour que $\mathcal{M}$ soit inversible. On choisira alors $M=10, N=100$ pour la suite.
+Il semble que choisir $N\gg H$ soit suffisant pour que $\mathcal{M}$ soit inversible. On choisira alors $H=10, N=100$ pour la suite.
 On obtient alors les coefficients présentés en figure \ref{fig:résultats 1 inv} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
 On constate que les erreurs sur chaque coefficient
 est inférieure à $10^{-16}$, on valide donc cette première méthode.
@@ -216,13 +216,13 @@ On définit les paramètres suivants :
                 A_1^{(0)} \\
                 A_2^{(0)} \\
                 \vdots \\
-                A_M^{(0)}
+                A_H^{(0)}
               \end{pmatrix},
     \bm{g}^{(0)} = \begin{pmatrix}
                 \frac{\partial E^{(0)}}{\partial A_1^{(0)}} \\
                 \frac{\partial E^{(0)}}{\partial A_2^{(0)}} \\
                 \vdots \\
-                \frac{\partial E^{(0)}}{\partial A_M^{(0)}}
+                \frac{\partial E^{(0)}}{\partial A_H^{(0)}}
               \end{pmatrix},     
 \label{eq:définition descente de gradients}
 \end{equation}
@@ -244,12 +244,12 @@ On exprime tout d'abord le gradient en fonction de la matrice $\mathcal{M}$ et d
 Ainsi, l'équation de récurrence (\ref{eq:équation récurrence descente gradients}) se réécrit comme une suite arithmético-géométrique de vecteurs :
 
 \begin{equation}
-    \bm{A}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \bm{A}^{(k)} + \alpha\bm{b}
+    \bm{A}^{(k+1)} = (\mathcal{I}_H - \alpha \mathcal{M} )  \bm{A}^{(k)} + \alpha\bm{b}
 \label{eq:équation récurrence descente gradients v2}
 \end{equation}
 
 On en déduit que la suite converge si et seulement si la norme $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ tend vers 0de le maximum du module des valeurs propres de la matrice
-$\mathcal{R}_\alpha = \mathcal{I}_M - \alpha \mathcal{M}$ est strictement inférieur à 1. De plus, elle convergera
+$\mathcal{R}_\alpha = \mathcal{I}_H - \alpha \mathcal{M}$ est strictement inférieur à 1. De plus, elle convergera
 d'autant plus vit que ce maximum est faible.
 On trace donc ce maximum en fonction de $\alpha$ en figure \ref{fig:choix alpha 1D}. 
 On en déduit la valeur critique $\alpha_c = 6.2807.10^{-5}$, pour laquelle le maximum des modules vaut $1$, ainsi que la 
@@ -322,14 +322,14 @@ On cherche à présent à utiliser un réseau de neurones pour approcher la solu
 \begin{equation}
 \left\{
     \begin{aligned}
-        \Tilde{\Psi}(x) &= \psi_0 + {\mathcal{N}}(x,P) \\
-        {\mathcal{N}}(x,P) &= \sum_{j=1}^{H} v_j \sigma(w_jx+b_j)
+        \Tilde{M}(t) &= M_0 + {\mathcal{N}}(t,\bm{P}) \\
+        {\mathcal{N}}(t,\bm{P}) &= \sum_{j=1}^{H} v_j \sigma(w_jt+b_j)
     \end{aligned}
 \right.
 \label{eq:solution NN}
 \end{equation}
 
-${\mathcal{N}}(x,P)$ correspond donc à la sortie d'un réseau de neurones dont l'architecture est présentée en figure \ref{fig:NN}, contenant une couche cachée intermédiaire, qui réalise en sortie une somme pondérée de sigmoïdes, la fonction utilisée est ${\displaystyle{\forall x \in \mathbf{R}, \sigma(x) = \frac{1}{1+e^{-x}}}}$. Les paramètres $P$ à ajuster sont désormais les coefficients $(w_j)_{j\in \llbracket 1,H \rrbracket}$, $(b_j)_{j\in \llbracket 1,H \rrbracket}$ et $(v_j)_{j\in \llbracket 1,H \rrbracket}$.
+${\mathcal{N}}(t,\bm{P})$ correspond donc à la sortie d'un réseau de neurones dont l'architecture est présentée en figure \ref{fig:NN}, contenant une couche cachée intermédiaire, qui réalise en sortie une somme pondérée de sigmoïdes, la fonction utilisée est ${\displaystyle{\forall x \in \mathbf{R}, \sigma(x) = \frac{1}{1+e^{-x}}}}$. Les paramètres $\bm{P}$ à ajuster sont désormais les coefficients $(w_j)_{j\in \llbracket 1,H \rrbracket}$, $(b_j)_{j\in \llbracket 1,H \rrbracket}$ et $(v_j)_{j\in \llbracket 1,H \rrbracket}$.
 
 {\color{red}Peux-tu donner une référence pour quelqu'un qui cherche ce que tout ceci veut dire?}
 \begin{figure}
@@ -338,17 +338,17 @@ ${\mathcal{N}}(x,P)$ correspond donc à la sortie d'un réseau de neurones dont 
 \caption{\label{fig:NN}Réseau de neurones}
 \end{figure}
 
-On définit une nouvelle fonction d'erreur, calculée à partir des $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, x_i = \frac{i-1}{N-1} $ 
+On définit une nouvelle fonction d'erreur, calculée à partir des $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N-1} $ 
 %(Contrairement à la fonction d'erreur définie pour les solutions en série de Fourier, 
 %on définit ici les points de tests de façon à inclure $x_N = 1$ car la fonction définie n'est plus nécessairement périodique, alors que ce point aurait été redondant avec le point $x_0 = 0$ pour les fonctions 1\_périodiques)
 
 \begin{equation}
-        E(P) = \sum_{i=1}^{N} (\frac{d\Tilde{\Psi}}{dx}(x_i) + \cos(2\pi x_i))^2
+        E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}}{dt}(t_i) + \cos(2\pi t_i))^2
 \label{eq:erreur NN}
 \end{equation}
 {\color{red}L'équation~(\ref{eq:erreur NN}) est-elle correcte ?}
 
-On calcule ensuite les expressions analytiques des dérivées partielles de $E(P)$ par rapport à chaque paramètre ajustable, puis on cherche à minimiser cette erreur à l'aide de l'algorithme de descente de gradients.
+On calcule ensuite les expressions analytiques des dérivées partielles de $E(\bm{P})$ par rapport à chaque paramètre ajustable, puis on cherche à minimiser cette erreur à l'aide de l'algorithme de descente de gradients.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Résultats obtenus}
@@ -365,13 +365,13 @@ On obtient une erreur de $1,2.10^{-2}$ et une estimation visible en figure \ref{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Mouvement de précession}
 \label{section_precession}
-On s'intéresse désormais au problème de la précession d'un moment magnétique dans un champ magnétique constant. On le modélise par les équations suivantes pour $t\in [0,1]$ :
+On s'intéresse désormais au problème de la précession d'un moment magnétique dans un champ magnétique constant. On le modélise par les équations suivantes pour $t\in [t_a=0,t_b=1]$ :
 
 \begin{equation}
 \left\{
     \begin{aligned}
-        \frac{dv_x}{dt} &= \omega v_y \\
-        \frac{dv_y}{dt} &= -\omega v_x
+        \frac{dM_x}{dt} &= \omega M_y \\
+        \frac{dM_y}{dt} &= -\omega M_x
     \end{aligned}
 \right.
 \end{equation}
@@ -379,8 +379,8 @@ avec les conditions initiales
 \begin{equation}
 \left\{
     \begin{aligned}
-        v_x(0) &= V_0 \\
-        v_y(0) &= 0
+        M_x(0) &= M_0 \\
+        M_y(0) &= 0
     \end{aligned}
 \right.
 \label{eq:équations couplées}
@@ -389,38 +389,38 @@ dont la solution analytique vaut
 \begin{equation}
 \left\{
     \begin{aligned}
-        v_x(t) &=  V_0 \cos(2\omega t)\\
-        v_y(t) &= -V_0 \sin(2\omega t)
+        M_x(t) &=  M_0 \cos(2\omega t)\\
+        M_y(t) &= -M_0 \sin(2\omega t)
     \end{aligned}
 \right.
 \label{eq:solution analytique couplée}
 \end{equation}
 
 \section{Solutions en séries de Fourier}
-On cherche des solutions numériques approchées sous la forme de séries de Fourier tronquées avec $M$ harmoniques, en posant la forme suivante :
+On cherche des solutions numériques approchées sous la forme de séries de Fourier tronquées avec $H$ harmoniques, en posant la forme suivante :
 
 \begin{equation}
 \left\{
     \begin{aligned}
-        \Tilde{v}_x(t) = V_0 + \sum_{m=1}^{M} A_m (\cos(m\omega t)-1) + B_m \sin(m\omega t) \\
-        \Tilde{v}_y(t) = \sum_{m=1}^{M} -A_m \sin(m\omega t) + B_m (\cos(m\omega t)-1)
+        \Tilde{M}_x(t) = M_0 + \sum_{m=1}^{H} A_m (\cos(m\omega t)-1) + B_m \sin(m\omega t) \\
+        \Tilde{M}_y(t) = \sum_{m=1}^{H} -A_m \sin(m\omega t) + B_m (\cos(m\omega t)-1)
     \end{aligned}
 \right.
 \label{eq:solution Fourier couplée}
 \end{equation}
 
-Les coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ et $(B_m)_{m\in \llbracket 0,M \rrbracket}$ sont les paramètres à ajuster.
-On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 0,M \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,M \rrbracket, B_m = 0 $. On remarque que le coefficient $A_0$ n'a aucune influence.
+Les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ et $(B_m)_{m\in \llbracket 0,H \rrbracket}$ sont les paramètres à ajuster.
+On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 0,H \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,H \rrbracket, B_m = 0 $. On remarque que le coefficient $A_0$ n'a aucune influence.
 
 On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
 
 \begin{equation}
-        E(P) = \sum_{i=1}^{N} (\frac{d\Tilde{v}_x}{dt}(t_i) - \omega \Tilde{v}_y(t_i))^2 + (\frac{d\Tilde{v}_y}{dt}(t_i) + \omega \Tilde{v}_x(t_i))^2
+        E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) - \omega \Tilde{M}_y(t_i))^2 + (\frac{d\Tilde{M}_y}{dt}(t_i) + \omega \Tilde{M}_x(t_i))^2
 \label{eq:erreur descente gradient couplées}
 \end{equation}
 
 On utilise ensuite la méthode de descente de gradients définie précédemment, en calculant les dérivées partielles suivantes :
-$(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,M \rrbracket}$
+$(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,H \rrbracket}$
 
 On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bm{P}$ comme la concaténation des 
 vecteurs $\bm{A}$ et $\bm{B}$ et le vecteur $\bm{g}$ comme le vecteur contenant les dérivées  partielles de $E$
@@ -430,23 +430,23 @@ par rapport à chaque composante de $\bm{P}$.
     \bm{P}^{(k)} = \begin{pmatrix}
                 A_1^{(k)} \\
                 \vdots \\
-                A_M^{(k)} \\
+                A_H^{(k)} \\
                 B_1^{(k)} \\
                 \vdots \\
-                B_M^{(k)}
+                B_H^{(k)}
               \end{pmatrix},
     \bm{g}^{(k)} = \begin{pmatrix}
                 \frac{\partial E^{(k)}}{\partial A_1^{(k)}} \\
                 \vdots \\
-                \frac{\partial E^{(k)}}{\partial A_M^{(k)}} \\
+                \frac{\partial E^{(k)}}{\partial A_H^{(k)}} \\
                 \frac{\partial E^{(k)}}{\partial B_1^{(k)}} \\
                 \vdots \\
-                \frac{\partial E^{(k)}}{\partial B_M^{(k)}} 
+                \frac{\partial E^{(k)}}{\partial B_H^{(k)}} 
               \end{pmatrix},     
 \label{eq:définition descente de gradients 2D}
 \end{equation}
 
-Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2M$ ainsi qu'un nouveau vecteur $\bm{b}$ de taille $2M$ tels que les 
+Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2H$ ainsi qu'un nouveau vecteur $\bm{b}$ de taille $2H$ tels que les 
 équations définissant la descente de gradients soient les suivantes :
 
 \begin{equation}
@@ -460,15 +460,15 @@ Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2M$ ainsi qu'un nouv
 \end{equation}
 
 \begin{equation}
-    \bm{P}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \bm{P}^{(k)} + \alpha\bm{b}
+    \bm{P}^{(k+1)} = (\mathcal{I}_H - \alpha \mathcal{M} )  \bm{P}^{(k)} + \alpha\bm{b}
 \label{eq:équation récurrence descente gradients v2 2D}
 \end{equation}
 
 On réalise la même étude qu'en dimension 1 pour la recherche du coefficient $\alpha_{min}$ qui minimise le maximum
-des modules des valeurs propres de $\mathcal{R}_\alpha = \mathcal{I}_M - \alpha \mathcal{M}$, ainsi que le coefficient 
+des modules des valeurs propres de $\mathcal{R}_\alpha = \mathcal{I}_H - \alpha \mathcal{M}$, ainsi que le coefficient 
 $\alpha_c$ à ne pas dépasser, à partir duquel ce maximum et supérieur à 1 et la suite diverge.
 On trouve les valeurs suivantes $\alpha_{min} = 6.0906.10^{-6}$ et $\alpha_c = 6.1146.10^{-6}$,  et l'évolution du 
-maximum en fonction de alpha est montré en figure \ref{fig:choix_alpha_2D}.
+maximum en fonction de $\alpha$ est montré en figure \ref{fig:choix_alpha_2D}.
 
 
 \begin{figure}
@@ -488,7 +488,7 @@ cette fois pendant les 4500 premières itérations, qui devient ensuite quasimen
     \caption{\label{fig:Erreur_2_DG}Valeur de la fonction d'erreur en fonction du nombre d'itérations}
 \end{figure}
 
-Les coefficients finaux de $P$ ainsi que les valeurs absolues de leurs erreurs sont représentées 
+Les coefficients finaux de $\bm{P}$ ainsi que les valeurs absolues de leurs erreurs sont représentées 
 en figure \ref{fig:résultats 2 DG}.
 On peut constater que l'on retrouve bien les coefficients attendus, avec une erreur au maximum de 
 l'ordre de $10^{-15}$.
@@ -520,26 +520,26 @@ $h_1=32$ neurones, une seconde couche intermédiaire de $h_2=8$ neurones, toutes
 deux utilisant la sigmoïde définie précédement comme fonction d'activation, 
 et enfin 2 neurones de sortie connectées à la deuxième couche intermédiaire, avec 
 l'idientité comme fonction d'activation en sortie.
-On note les sorties de ces deux derniers neurones respectivement $\mathcal{N}_x(t, P)$
-et $\mathcal{N}_y(t, P)$, où $P$ représente l'ensemble des paramètres du réseau de neurones.
+On note les sorties de ces deux derniers neurones respectivement $\mathcal{N}_x(t, \bm{P})$
+et $\mathcal{N}_y(t, \bm{P})$, où $\bm{P}$ représente l'ensemble des paramètres du réseau de neurones.
 On construit alors nos solutions approchées de la façon suivante :
 
 \begin{equation}
     \left\{
         \begin{aligned}
-            \Tilde{v}_x(t) &= V_0+ t\mathcal{N}_x(t, P) \\
-            \Tilde{v}_y(t) &= t\mathcal{N}_y(t, P)
+            \Tilde{M}_x(t) &= M_0+ t\mathcal{N}_x(t, \bm{P}) \\
+            \Tilde{M}_y(t) &= t\mathcal{N}_y(t, \bm{P})
         \end{aligned}
     \right.
     \label{eq:solution 2_NN}
     \end{equation}
 
 On définit une fonction d'erreur pour ces solutions potentielles, 
-en s'interressant aux $N$ points suivants de l'intervalle [-1, 1]: 
+en s'interressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$: 
 $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 
 \begin{equation}
-        E(P) = \frac{1}{N}\sum_{i=1}^{N} (\frac{d\Tilde{v}_x}{dt}(t_i) - \omega \Tilde{v}_y(t_i))^2 + (\frac{d\Tilde{v}_y}{dt}(t_i) + \omega \Tilde{v}_x(t_i))^2
+        E(\bm{P}) = \frac{1}{N}\sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) - \omega \Tilde{M}_y(t_i))^2 + (\frac{d\Tilde{M}_y}{dt}(t_i) + \omega \Tilde{M}_x(t_i))^2
 \label{eq:erreur 2_NN}
 \end{equation}
 
@@ -547,7 +547,7 @@ $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.007,
 50000 itérations, et on lance 3 entraînements pour $N \in \{10,40,100\}$. On obtient les résultats montrés 
 en figure \ref{fig:résultats 2 NN en fonction de N}, où l'axe vertical représente le temps,
-et les axes horizontaux représentent $v_x$ et $v_y$. La solution analytique est représentée 
+et les axes horizontaux représentent $M_x$ et $M_y$. La solution analytique est représentée 
 en orange, la solution approchée est représentée en bleu, et les points rouges sont les
 points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
 
@@ -571,7 +571,7 @@ points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \r
         \includegraphics[width=1\textwidth, height=0.9\textwidth]{direct_training_N=100.png}
         \caption{Solution obtenue pour $N=100$}
     \end{subfigure}
-       \caption{Représentations graphiques de $v_x$ et  $v_y$ en fonction du temps par le réseau de neurones}
+       \caption{Représentations graphiques de $M_x$ et  $M_y$ en fonction du temps par le réseau de neurones}
        \label{fig:résultats 2 NN en fonction de N}
 \end{figure}
 
@@ -618,12 +618,12 @@ celle-ci en premier lieu.
 On utilise la même approche avec un réseau de neurones que précédemment à l'aide d'un réseau de neurones.
 On réalisera à présent les implémentations en python à l'aide de la bibliothèque TensorFlow.
 
-On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $P$.
+On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $\bm{P}$.
 Comme précédemment, afin de satisfaire la condition initiale, on cherche les fonction $\tilde{M_z}$
-sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},P)$ représente la sortie du réseau de neurones.
+sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},\bm{P})$ représente la sortie du réseau de neurones.
 
 \begin{equation}
-    \Tilde{M_z}(\Tilde{t}) = M_z(0) +\Tilde{t} {\mathcal{N}}(\Tilde{t},P) 
+    \Tilde{M_z}(\Tilde{t}) = M_z(0) +\Tilde{t} {\mathcal{N}}(\Tilde{t},\bm{P}) 
     \label{eq:solution NN Mz}
 \end{equation}
 
@@ -637,7 +637,7 @@ On remarque que souvent la sortie du réseau de neurones est quasiment constante
 sur l'intervalle d'étude. Ainsi, il semble que l'entraînement ne consiste alors dans ce 
 cas qu'à ajuster cette valeur constante pour minimser la fonction d'erreur dans le cas 
 où $M_z$ est linéaire par rapport à $\tilde{t}$, (d'après l'équation \ref{eq:solution NN Mz},
-pour ${\mathcal{N}}(\Tilde{t},P) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
+pour ${\mathcal{N}}(\Tilde{t},\bm{P}) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
 
 Après plusieurs essais d'entraînement, on remarque que l'on tombe sur l'une ou l'autre des 2 solutions
 présentées en figure \ref{fig:minimums locaux Mz}.
@@ -699,8 +699,7 @@ en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations,
 avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
 L'erreur finale est de 0.018.
 
-Ainsi, la fonction Relu semble faciliter la convergence du réseau de neurones
-vers une solution 
+Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones
 
 \begin{figure}
     \centering
