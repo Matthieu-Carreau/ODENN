@@ -170,11 +170,15 @@ On souhaite alors résoudre le système linéaire en écrivant l'équation matri
 \label{eq:équation matricielle}
 \end{equation}
 
-On réalise l'implémentation en python, en instanciant 
-les matrices définies précédemment et à l'aide de la bibliothèque \emph{numpy}. 
+On réalise l'implémentation en python, en instanciant les matrices définies précédemment et à l'aide de la bibliothèque \emph{numpy}. 
+
 On peut constater que la matrice $\mathcal{M}$ n'est pas toujours inversible selon le choix de $H$ et $N$. 
-En effet, on peut montrer {\color{red}(à rajouter en annexe)} que c'est nécessairement le cas lorsque $H>N$, mais on remarque également qu'elle ne l'est pas non plus lorsque $H$ et $N$ sont proches par exemple pour $H=N=10$. 
+En effet, on peut montrer que c'est nécessairement le cas lorsque $H>N$. Il suffit pour cela d'écrire la matrice $\mathcal{M}$ en fonction de la matrice $\mathcal{A}$ de taille $N \times H$, dont les coefficients sont données par $ \forall (i,j) \in \llbracket 1, N\rrbracket \times \llbracket 1, H\rrbracket, a_{i,j} = j \cos(2 \pi j t_i)$.
+On a alors $\mathcal{M} = 2\pi(\mathcal{A}^T)\mathcal{A}$. On en déduit un majorant du rang de $\mathcal{M}$: $rg(\mathcal{M}) \leq \min(rg(\mathcal{A}^T), rg(\mathcal{A})) = rg(\mathcal{A}) \leq N $. Ainsi si $N<H$, alors $\mathcal{M}$ n'est pas inversible.
+
+On remarque également qu'elle ne l'est pas non plus lorsque $H$ et $N$ sont proches par exemple pour $H=N=10$. 
 Il serait interressant d'approfondir ce point pour savoir si cela se traduit par le fait que $E$ admette plusieurs minimums locaux par exemple.
+
 Il semble que choisir $N\gg H$ soit suffisant pour que $\mathcal{M}$ soit inversible. 
 On choisira alors $H=10, N=100$ pour la suite.
 On obtient alors les coefficients présentés en figure \ref{fig:résultats 1 inv} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
