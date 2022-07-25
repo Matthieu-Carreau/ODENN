@@ -62,7 +62,9 @@ Le problème physique étudié est celui de la précession d'un moment magnétiq
 \chapter{Equation différentielle d'ordre 1}
 \label{section_ode_1}
 
-Soit $M$ une fonction réelle à une variable satisfaisant l'équation différentielle suivante, où $M_0$ désigne la valeur initiale de la fonction.
+On souhaite dans ce chapitre se familiariser avec différentes méthodes sur un cas simple avec une équation différentielle d'ordre 1 en une dimension.
+
+On considère alors $M$, une fonction réelle à une variable satisfaisant l'équation différentielle suivante, où $M_0$ désigne la valeur initiale de la fonction :
 
 \begin{equation}
 \left\{
@@ -73,6 +75,7 @@ Soit $M$ une fonction réelle à une variable satisfaisant l'équation différen
 \right.
 \label{eq:equa dif}
 \end{equation}
+
 On cherche à tester les méthodes présentées dans la section~\ref{Introduction} sur l'équation~(\ref{eq:equa dif}), pour tout $t\in [t_a=0,t_b=1]$.
 L'équation~(\ref{eq:equa dif}) et sa condition initiale donnée en $t=0$, admet une solution analytique unique qui s'écrit
 \begin{equation}
@@ -103,10 +106,15 @@ On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux te
 
 
 
-On définit une fonction d'erreur pour ces solutions potentielles, à partir de la valeur de la dérivée de $\Tilde{M}$ aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $
+On définit une fonction d'erreur pour ces solutions potentielles, à partir de la valeur de la dérivée de $\Tilde{M}$ aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
+
+
 
 \begin{equation}
-    E = \frac{1}{2}\sum_{i=1}^{N}(\sum_{m=1}^{H} 2\pi m A_m \cos(2\pi m t_i)+\cos(2\pi t_i))^2 
+    \begin{aligned}
+        E &= \frac{1}{2}\sum_{i=1}^{N} (\frac{d\Tilde{M}}{dt}(t_i) +\cos(2\pi t_i))^2   \\
+          &= \frac{1}{2}\sum_{i=1}^{N}(\sum_{m=1}^{H} 2\pi m A_m \cos(2\pi m t_i)+\cos(2\pi t_i))^2 
+    \end{aligned}
 \label{eq:fonction d'erreur}
 \end{equation}
 
@@ -130,10 +138,9 @@ Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Première méthode : inversion d'un système linéaire}
+\subsection{Inversion du système linéaire}
 
-On cherche à résoudre le système linéaire donné par : 
-$\displaystyle{\forall l \in\llbracket 1,H \rrbracket, \frac{\partial E}{\partial A_l} = 0}$, on définit pour cela les matrices suivantes :
+Dans le cas de cette modélisation pour la fonction approchée, la condition \ref{eq:condition nécessaire A_l} correspond à un système linéaire de $H$ équations. 
 
 \begin{equation}
     \mathcal{M} = (r_{m,l})_{(m,l)\in \llbracket 1, H\rrbracket ^2}, 
@@ -205,7 +212,7 @@ On constate que les erreurs sur chaque coefficient est inférieure à $10^{-16}$
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Seconde méthode : descente de gradients}
+\subsection{Algorithme de descente de gradients}
 
 On définit les paramètres suivants :
 
@@ -317,7 +324,7 @@ On cherche à présent à utiliser un réseau de neurones pour approcher la solu
 \begin{equation}
 \left\{
     \begin{aligned}
-        \Tilde{M}(t) &= M_0 + {\mathcal{N}}(t,\bm{P}) \\
+        \Tilde{M}(t) &= M_0 + t{\mathcal{N}}(t,\bm{P}) \\
         {\mathcal{N}}(t,\bm{P}) &= \sum_{j=1}^{H} v_j \sigma(w_jt+b_j)
     \end{aligned}
 \right.
@@ -396,15 +403,15 @@ On cherche des solutions numériques approchées sous la forme de séries de Fou
 \begin{equation}
 \left\{
     \begin{aligned}
-        \Tilde{M}_x(t) = M_0 + \sum_{m=1}^{H} A_m (\cos(m\omega t)-1) + B_m \sin(m\omega t) \\
-        \Tilde{M}_y(t) = \sum_{m=1}^{H} -A_m \sin(m\omega t) + B_m (\cos(m\omega t)-1)
+        \Tilde{M}_x(t) &= M_0 + \sum_{m=1}^{H} A_m (\cos(m\omega t)-1) + B_m \sin(m\omega t) \\
+        \Tilde{M}_y(t) &= \sum_{m=1}^{H} -A_m \sin(m\omega t) + B_m (\cos(m\omega t)-1)
     \end{aligned}
 \right.
 \label{eq:solution Fourier couplée}
 \end{equation}
 
-Les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ et $(B_m)_{m\in \llbracket 0,H \rrbracket}$ sont les paramètres à ajuster.
-On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 0,H \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,H \rrbracket, B_m = 0 $. On remarque que le coefficient $A_0$ n'a aucune influence.
+Les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ et $(B_m)_{m\in \llbracket 1,H \rrbracket}$ sont les paramètres à ajuster.
+On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,H \rrbracket, B_m = 0 $. 
 
 On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
 
