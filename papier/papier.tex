@@ -46,6 +46,10 @@
 \chapter{Introduction}
 \label{Introduction}
 
+Ce rapport est le compte-rendu d'un stage d'un mois ayant pour objet la mise en place et l'implémentation de méthodes de résolution d'équations différentielles à l'aide de réseau de neurones. 
+Le problème physique étudié est celui de la précession d'un moment magnétique dans un champ magnétique, que l'on décrira dans un premier temps par l'équation de précession de Larmor~\cite{PrecessionLarmor}, puis par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}.
+
+
 {
     \color{red}{Cette partie positionne le travail dans un contexte. Décrire le contexte. Dire ici ce que l'on doit faire et proposer un petit résumé des documents lus de façon à montrer en quoi ils sont pertients pour le problème posé.
     Par exemple : Bidulle et Machin dans la référence~\cite{BiduletMachin2020} ont montré que ... tandis que Truc et Chmuc dans la référence~\cite{TrucetChmuc2020} ont prouvé que...}
@@ -85,13 +89,13 @@ Cela nous permettra par la suite d'évaluer nos solutions numériques, en les co
 
 On cherche des solutions numériques approchées de l'équation~(\ref{eq:equa dif}) sous la forme de séries de Fourier tronquées avec $M$ harmoniques.
 On écrit pour cela la solution approchée $\Tilde{\Psi}$ comme la somme de deux termes, le premier $\psi_0$ constant non ajustable vérifiant la condition initiale, et 
-le deuxième $\mathcal{N}(x,\bf{A})$ dépendant des coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ représentés par le vecteur $\bf{A}$, construit de façon à ne pas influencer la valeur initiale de la fonction.
+le deuxième $\mathcal{N}(x,\bm{A})$ dépendant des coefficients $(A_m)_{m\in \llbracket 1,M \rrbracket}$ représentés par le vecteur $\bm{A}$, construit de façon à ne pas influencer la valeur initiale de la fonction.
 
 \begin{equation}
 \left\{
     \begin{aligned}
-        \Tilde{\Psi}(x) &= \psi_0 + {\mathcal{N}}(x,\bf{A}) \\
-        {\mathcal{N}}(x,\bf{A}) &= \sum_{m=1}^{M} A_m \sin(2\pi m x) 
+        \Tilde{\Psi}(x) &= \psi_0 + {\mathcal{N}}(x,\bm{A}) \\
+        {\mathcal{N}}(x,\bm{A}) &= \sum_{m=1}^{M} A_m \sin(2\pi m x) 
     \end{aligned}
 \right.
 \label{eq:solution Fourier}
@@ -107,7 +111,7 @@ On définit une fonction d'erreur pour ces solutions potentielles, à partir de 
 \label{eq:fonction d'erreur}
 \end{equation}
 
-On cherche à présent le minimum de $E$ en tant que fonction de $\bf{A}$. Une condition nécessaire sur $\bf{A}$ pour être un antécédent d'un minimum
+On cherche à présent le minimum de $E$ en tant que fonction de $\bm{A}$. Une condition nécessaire sur $\bm{A}$ pour être un antécédent d'un minimum
 est 
 \begin{equation}
     {\forall l \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partial A_l} = 0}
@@ -136,13 +140,13 @@ $\displaystyle{\forall l \in\llbracket 1,M \rrbracket, \frac{\partial E}{\partia
 
 \begin{equation}
     \mathcal{M} = (r_{m,l})_{(m,l)\in \llbracket 1, M\rrbracket ^2}, 
-    \bf{A} = \begin{pmatrix}
+    \bm{A} = \begin{pmatrix}
                 A_1 \\
                 A_2 \\
                 \vdots \\
                 A_M
               \end{pmatrix}, 
-    \bf{b} = \begin{pmatrix}
+    \bm{b} = \begin{pmatrix}
                 b_1 \\
                 b_2 \\
                 \vdots \\
@@ -166,7 +170,7 @@ On souhaite alors résoudre le système linéaire en écrivant
 l'équation matricielle le représentant, c'est-à-dire :
 
 \begin{equation}
-    \mathcal{M} \bf{A} = \bf{b} \Leftrightarrow \bf{A} = \mathcal{M}^{-1}\bf{b}
+    \mathcal{M} \bm{A} = \bm{b} \Leftrightarrow \bm{A} = \mathcal{M}^{-1}\bm{b}
 \label{eq:équation matricielle}
 \end{equation}
 
@@ -208,13 +212,13 @@ On définit les paramètres suivants :
 
 \begin{equation}
     \alpha>0, 
-    \bf{A}^{(0)} = \begin{pmatrix}
+    \bm{A}^{(0)} = \begin{pmatrix}
                 A_1^{(0)} \\
                 A_2^{(0)} \\
                 \vdots \\
                 A_M^{(0)}
               \end{pmatrix},
-    \bf{g}^{(0)} = \begin{pmatrix}
+    \bm{g}^{(0)} = \begin{pmatrix}
                 \frac{\partial E^{(0)}}{\partial A_1^{(0)}} \\
                 \frac{\partial E^{(0)}}{\partial A_2^{(0)}} \\
                 \vdots \\
@@ -226,21 +230,21 @@ On définit les paramètres suivants :
 Puis on calcule itérativement :
 
 \begin{equation}
-    \bf{A}^{(k+1)} = \bf{A}^{(k)} - \alpha\bf{g}^{(k)} 
+    \bm{A}^{(k+1)} = \bm{A}^{(k)} - \alpha\bm{g}^{(k)} 
 \label{eq:équation récurrence descente gradients}
 \end{equation}
 
 On cherche à trouver le coefficient $\alpha$ optimal qui assure la convergence tout en maximisant la vitesse de convergence.
-On exprime tout d'abord le gradient en fonction de la matrice $\mathcal{M}$ et du vecteur $\bf{b}$ définis précédemment qui sont indépendants de $\bf{A}$ et de $k$:
+On exprime tout d'abord le gradient en fonction de la matrice $\mathcal{M}$ et du vecteur $\bm{b}$ définis précédemment qui sont indépendants de $\bm{A}$ et de $k$:
 \begin{equation}
-    \bf{g}^{(k)} = \mathcal{M}\bf{A}^{(k)} - \bf{b}
+    \bm{g}^{(k)} = \mathcal{M}\bm{A}^{(k)} - \bm{b}
 \label{eq:expression matricielle gradient}
 \end{equation}
 
 Ainsi, l'équation de récurrence (\ref{eq:équation récurrence descente gradients}) se réécrit comme une suite arithmético-géométrique de vecteurs :
 
 \begin{equation}
-    \bf{A}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \bf{A}^{(k)} + \alpha\bf{b}
+    \bm{A}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \bm{A}^{(k)} + \alpha\bm{b}
 \label{eq:équation récurrence descente gradients v2}
 \end{equation}
 
@@ -418,12 +422,12 @@ On définit une fonction d'erreur pour ces solutions potentielles, en s'interres
 On utilise ensuite la méthode de descente de gradients définie précédemment, en calculant les dérivées partielles suivantes :
 $(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,M \rrbracket}$
 
-On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bf{P}$ comme la concaténation des 
-vecteurs $\bf{A}$ et $\bf{B}$ et le vecteur $\bf{g}$ comme le vecteur contenant les dérivées  partielles de $E$
-par rapport à chaque composante de $\bf{P}$. 
+On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bm{P}$ comme la concaténation des 
+vecteurs $\bm{A}$ et $\bm{B}$ et le vecteur $\bm{g}$ comme le vecteur contenant les dérivées  partielles de $E$
+par rapport à chaque composante de $\bm{P}$. 
 
 \begin{equation}
-    \bf{P}^{(k)} = \begin{pmatrix}
+    \bm{P}^{(k)} = \begin{pmatrix}
                 A_1^{(k)} \\
                 \vdots \\
                 A_M^{(k)} \\
@@ -431,7 +435,7 @@ par rapport à chaque composante de $\bf{P}$.
                 \vdots \\
                 B_M^{(k)}
               \end{pmatrix},
-    \bf{g}^{(k)} = \begin{pmatrix}
+    \bm{g}^{(k)} = \begin{pmatrix}
                 \frac{\partial E^{(k)}}{\partial A_1^{(k)}} \\
                 \vdots \\
                 \frac{\partial E^{(k)}}{\partial A_M^{(k)}} \\
@@ -442,21 +446,21 @@ par rapport à chaque composante de $\bf{P}$.
 \label{eq:définition descente de gradients 2D}
 \end{equation}
 
-Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2M$ ainsi qu'un nouveau vecteur $\bf{b}$ de taille $2M$ tels que les 
+Il existe alors une nouvelle matrice $\mathcal{M}$ d'ordre $2M$ ainsi qu'un nouveau vecteur $\bm{b}$ de taille $2M$ tels que les 
 équations définissant la descente de gradients soient les suivantes :
 
 \begin{equation}
-    \bf{P}^{(k+1)} = \bf{P}^{(k)} - \alpha\bf{g}^{(k)} 
+    \bm{P}^{(k+1)} = \bm{P}^{(k)} - \alpha\bm{g}^{(k)} 
 \label{eq:équation récurrence descente gradients 2D}
 \end{equation}
 
 \begin{equation}
-    \bf{g}^{(k)} = \mathcal{M}\bf{P}^{(k)} - \bf{b}
+    \bm{g}^{(k)} = \mathcal{M}\bm{P}^{(k)} - \bm{b}
 \label{eq:expression matricielle gradient 2D}
 \end{equation}
 
 \begin{equation}
-    \bf{P}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \bf{P}^{(k)} + \alpha\bf{b}
+    \bm{P}^{(k+1)} = (\mathcal{I}_M - \alpha \mathcal{M} )  \bm{P}^{(k)} + \alpha\bm{b}
 \label{eq:équation récurrence descente gradients v2 2D}
 \end{equation}
 
@@ -576,7 +580,7 @@ points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \r
 \chapter{Précession avec amortissement}
 \label{chap:precession_gilbert}
 
-Dans ce chapitre, on s'intéresse à déterminer le mouvement de précession d'un moment magnétique $\bf{M} \in \mathbb{R}^3$ amorti.
+Dans ce chapitre, on s'intéresse à déterminer le mouvement de précession d'un moment magnétique $\bm{M} \in \mathbb{R}^3$ amorti.
 Son équation d'évolution est représentée en fonction d'une constante d'amortissement réelle et sans dimension notée $\lambda$ et s'établit, pour simplifier, autour d'un vecteur ${\bm{\omega}}$ pointant le long de l'axe $z$ et dont la composante sur cet axe est constante, soit $\bm{\omega}=\omega_z{\bm z}$.
 
 L'équation considérée prend le nom d'équation de precession avec un terme d'amortissement introduit par Gilbert~\cite{EquationGilbert} et s'écrit
@@ -596,9 +600,9 @@ En prenant le produit vectoriel par $\bm M$ à gauche des deux membres de l'équ
 \begin{equation}
     \left\{
         \begin{aligned}
-            \frac{dM_x}{d\tilde{t}} &= M_y\omega_z + \lambda M_x M_z \omega_z \\
-            \frac{dM_y}{d\tilde{t}} &= -M_x\omega_z + \lambda M_y M_z \omega_z \\
-            \frac{dM_z}{d\tilde{t}} &= \lambda\omega_z (M_z^2-1) 
+            \frac{dM_x}{d\tilde{t}} &= - M_y\omega_z - \lambda M_x M_z \omega_z \\
+            \frac{dM_y}{d\tilde{t}} &= M_x\omega_z - \lambda M_y M_z \omega_z \\
+            \frac{dM_z}{d\tilde{t}} &= \lambda\omega_z (1-M_z^2) 
         \end{aligned} 
     \right. 
     \label{eq:equations scalaires Gilbert}
@@ -614,15 +618,12 @@ celle-ci en premier lieu.
 On utilise la même approche avec un réseau de neurones que précédemment à l'aide d'un réseau de neurones.
 On réalisera à présent les implémentations en python à l'aide de la bibliothèque TensorFlow.
 
-
-On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, 
-suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés
-à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $P$.
+On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $P$.
 Comme précédemment, afin de satisfaire la condition initiale, on cherche les fonction $\tilde{M_z}$
 sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},P)$ représente la sortie du réseau de neurones.
 
 \begin{equation}
-    \Tilde{M_z}(\Tilde{t}) = M_z(0) + {\mathcal{N}}(\Tilde{t},P) 
+    \Tilde{M_z}(\Tilde{t}) = M_z(0) +\Tilde{t} {\mathcal{N}}(\Tilde{t},P) 
     \label{eq:solution NN Mz}
 \end{equation}
 
@@ -718,6 +719,8 @@ vers une solution
     \bibitem{BiduletMachin2020}{C.Bidule and A.Machin, Journal of Computer Power {\bf 12} 123 (2020)}
     \bibitem{TrucetChmuc2020}{C.Truc and T.Chmuc, (2020)}
     \bibitem{EquationGilbert}{\href{https://fr.wikipedia.org/wiki/%C3%89quation_de_Landau-Lifshitz-Gilbert}{Wikipedia, Équation de Landau-Lifshitz-Gilbert
+    }}
+    \bibitem{PrecessionLarmor}{\href{https://fr.wikipedia.org/wiki/Pr%C3%A9cession_de_Larmor}{Wikipedia, Précession de Larmor
     }}
 \end{thebibliography}
 
