@@ -381,9 +381,9 @@ On cherche à présent à utiliser un réseau de neurones pour approcher la solu
 \label{eq:solution NN}
 \end{equation}
 
-${\mathcal{N}}(t,\bm{P})$ correspond donc à la sortie d'un réseau de neurones dont l'architecture est présentée en figure \ref{fig:NN}, contenant une couche cachée intermédiaire, qui réalise en sortie une somme pondérée de sigmoïdes, la fonction utilisée est ${\displaystyle{\forall x \in \mathbf{R}, \sigma(x) = \frac{1}{1+e^{-x}}}}$. Les paramètres $\bm{P}$ à ajuster sont désormais les coefficients $(w_j)_{j\in \llbracket 1,H \rrbracket}$, $(b_j)_{j\in \llbracket 1,H \rrbracket}$ et $(v_j)_{j\in \llbracket 1,H \rrbracket}$.
+Le terme ${\mathcal{N}}(t,\bm{P})$ correspond donc à la sortie d'un réseau de neurones dont l'architecture est présentée en figure \ref{fig:NN}, contenant une couche cachée intermédiaire, qui réalise en sortie une somme pondérée de sigmoïdes, la fonction utilisée est ${\displaystyle{\forall x \in \mathbf{R}, \sigma(x) = \frac{1}{1+e^{-x}}}}$. Les paramètres $\bm{P}$ à ajuster sont désormais les coefficients $(w_j)_{j\in \llbracket 1,H \rrbracket}$, $(b_j)_{j\in \llbracket 1,H \rrbracket}$ et $(v_j)_{j\in \llbracket 1,H \rrbracket}$.
 
-{\color{red}Peux-tu donner une référence pour quelqu'un qui cherche ce que tout ceci veut dire?}
+Pour plus de détails, la page~\cite{WikiNN} présente le principe de ce type de réseau de neurones.
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{NN.jpg}
@@ -635,7 +635,15 @@ Cette équation vectorielle admet plusieures propriétés remarquables que nous 
 \section{Projection en coordonnées cartésiennes}
 \label{sec:projection_cartesiennes}
 
-En prenant le produit vectoriel par $\bm M$ à gauche des deux membres de l'équation~\ref{eq:equation Gilbert}, on forme une projection sur un plan normal à $\bm{M}$, et on obtient 3 nouvelles équations différentielles scalaires (après un chagement d'échelle temporelle) :
+En prenant le produit vectoriel par $\bm M$ à gauche des deux membres de l'équation~\ref{eq:equation Gilbert}, on forme une projection sur un plan normal à $\bm{M}$ :
+
+\begin{equation}
+    \bm{M}\times\frac{d\bm{M}}{dt} = \bm{M}\times((\bm{\omega}-\lambda \frac{d{\bm{M}}}{dt})\times\bm{M} )
+    \label{eq:equation Gilbert produit vectoriel}
+\end{equation}
+
+Aprés développement, et le changement d'échelle temporelle $\Tilde{t} = (1+\lambda^2)t$, on obtient 3 nouvelles équations différentielles scalaires :
+
 \begin{equation}
     \left\{
         \begin{aligned}
@@ -743,7 +751,7 @@ Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones
     \bibitem{ANNforOPDEs}{\href{https://doi.org/10.1109/72.712178}{I. E. Lagaris, A. Likas and D. I. Fotiadis, IEEE Transactions on Neural Networks {\bf9} no. 5 pp. 987-1000 (1998)}}
     \bibitem{HighOrderHybrid}{\href{https://doi.org/10.1016/j.amc.2006.05.068}{A.Malek * and R.Shekari Beidokhti, Applied Mathematics and Computation {\bf183} 260–271(2006)}}
     \bibitem{FunctionApproximation}{\href{https://dl.acm.org/doi/10.5555/1466915.1466916#}{Z.Zainuddin and P.Ong, WSEAS Transactions on Mathematics Volume {\bf7} Issue 6 pp 333–338(2008)}}
-    \bibitem{WikiNN}{\href{https://en.wikipedia.org/wiki/Artificial_neural_network}{Wikipedia, Réseaux de neurones
+    \bibitem{WikiNN}{\href{https://en.wikipedia.org/wiki/Feedforward_neural_network}{Wikipedia, Réseaux de neurones
     }}
     \bibitem{WikiRayonSpectral}{\href{https://en.wikipedia.org/wiki/Spectral_radius#Power_sequence}{Wikipedia, Rayon spectral et suites des puissances
     }}
