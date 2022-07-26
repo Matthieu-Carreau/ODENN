@@ -28,7 +28,7 @@ display_step = min(max(1,epochs//100), 1000)
 # Network Parameters
 n_input = 1     # input layer number of neurons
 n_hidden_1 = 32 # 1st layer number of neurons
-n_hidden_2 = 8 # 2nd layer number of neurons
+n_hidden_2 = 8  # 2nd layer number of neurons
 n_output = 2    # output layer number of neurons
 
 
