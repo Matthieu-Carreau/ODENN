@@ -53,7 +53,7 @@ Cette seconde version de l'équation ne possède pas de solution analytique conn
 L'approche proposée ici consiste à utiliser des réseaux de neurones, connus pour leur capacité à approcher des fonctions~\cite{FunctionApproximation}, pour trouver des fonctions "proches" d'être solution d'une équation différentielle.
 On utilise par conséquent les réseaux de neurones à la manière de ~\cite{MLWithApp}, ~\cite{ANNforOPDEs} et ~\cite{HighOrderHybrid}, en utilisant les algorithmes d'optimisation connus pour minimiser une fonction d'erreur, qui indique dans quelle mesure une fonction candidate, construite à partir du réseau de neurones, est proche d'être solution.
 
-On écrira lorsque cela sera possible l'équation différentielle d'inconnue $\bm{M}:  \mathbb{R} \to  \mathbb{R}^n$ sous une forme similaire à la suivante, où $\bm{g}:  \mathbb{R}\times\mathbb{R}^n \to  \mathbb{R}^n$ est une foncion connue :
+On écrira lorsque cela sera possible l'équation différentielle d'inconnue $\bm{M}: \mathbb{R} \to  \mathbb{R}^n$ (vecteur adimensionné représentant le moment magnétique) sous une forme similaire à la suivante, où $\bm{g}:  \mathbb{R}\times\mathbb{R}^n \to  \mathbb{R}^n$ est une foncion connue :
 
 \begin{equation}
     \left\{
@@ -65,7 +65,7 @@ On écrira lorsque cela sera possible l'équation différentielle d'inconnue $\b
 \label{eq:equa dif example}
 \end{equation}
 
-La méthode consiste ensuite à construire une fonction candodate pour l'équation différentielle comme une somme de deux termes.
+La méthode consiste ensuite à construire une fonction candidate pour l'équation différentielle comme une somme de deux termes.
 le premier est un terme non ajustable vérifiant la condition initiale, et le deuxième dépendant des paramètres à entraîner représentés par le vecteur $\bm{P}$. Ce dernier est construit de façon à ne pas influencer la valeur initiale de la fonction, afin que la condition initiale soit toujours satisfaite, ceci étant réalisé grâce à une fonction $f:\mathcal{R}\to\mathcal{R}$ fixée à l'avance (souvent $f = id_{\mathcal{R}}$)
 
 \begin{equation}
@@ -82,17 +82,15 @@ On définit ensuite une fonction d'erreur, que l'on calcule à partir de $N$ poi
 
 Il s'agira enfin d'utiliser différentes méthodes d'optimisation propres au réseaux de neurones afin de trouver un vecteur $\bm P$ qui minimise (et idéalement annule) cette fonction d'erreur.
 
-{
-    \color{red}{Cette partie positionne le travail dans un contexte. Décrire le contexte. Dire ici ce que l'on doit faire et proposer un petit résumé des documents lus de façon à montrer en quoi ils sont pertients pour le problème posé.
-    Par exemple : Bidulle et Machin dans la référence~\cite{BiduletMachin2020} ont montré que ... tandis que Truc et Chmuc dans la référence~\cite{TrucetChmuc2020} ont prouvé que...}
-    Dans la section~\ref{section_ode_1}, je montrerai que...
-    Dans la section~\ref{section_precession}, je montrerai...
-    Enfin dans la section~\ref{Conclusion}, je discuterai des résultats obtenus et proposerai quelques perspectives.
-}
+On s'interresera dans le chapitre~\ref{chap:ode_1} à la résolution d'une équation différentielle à une dimension, en choisissant d'abord le terme ajustable $\mathcal{N}(t,\bm{P})$ sous la forme de séries de Fourier, puis comme la sortie d'un réseau de neurones.
+On appliquera dans le chapitre~\ref{chap:precession} les mêmes méthodes pour la résolution d'un système de deux équations couplées représentant le mouvement de précession décrit par l'équation de Larmor.
+On étudiera ensuite dans le chapitre~\ref{chap:precession_gilbert} l'effet de l'ajout du terme d'amortissement introduit dans l'équation de Landau-Lifshitz-Gilbert, en utilisant les méthodes qui auront été établies dans les premiers chapitres.
+Enfin dans la section~\ref{Conclusion}, je discuterai des résultats obtenus et proposerai quelques perspectives.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Equation différentielle d'ordre 1}
-\label{section_ode_1}
+\chapter{Equation différentielle à une dimension}
+\label{chap:ode_1}
 
 On souhaite dans ce chapitre se familiariser avec différentes méthodes sur un cas simple avec une équation différentielle d'ordre 1 en une dimension.
 
@@ -173,6 +171,7 @@ Les deux méthodes suivantes ont pour objectif de trouver les coefficients $(A_m
 \subsection{Inversion du système linéaire}
 
 Dans le cas de cette modélisation pour la fonction approchée, la condition \ref{eq:condition nécessaire A_l} correspond à un système linéaire de $H$ équations. 
+On peut le représenter en définissant les matrices suivantes :
 
 \begin{equation}
     \mathcal{M} = (r_{m,l})_{(m,l)\in \llbracket 1, H\rrbracket ^2}, 
@@ -213,7 +212,7 @@ On réalise l'implémentation en python, en instanciant les matrices définies p
 
 On peut constater que la matrice $\mathcal{M}$ n'est pas toujours inversible selon le choix de $H$ et $N$. 
 En effet, on peut montrer que c'est nécessairement le cas lorsque $H>N$. Il suffit pour cela d'écrire la matrice $\mathcal{M}$ en fonction de la matrice $\mathcal{A}$ de taille $N \times H$, dont les coefficients sont données par $ \forall (i,j) \in \llbracket 1, N\rrbracket \times \llbracket 1, H\rrbracket, a_{i,j} = j \cos(2 \pi j t_i)$.
-On a alors $\mathcal{M} = 2\pi(\mathcal{A}^T)\mathcal{A}$. On en déduit un majorant du rang de $\mathcal{M}$: $rg(\mathcal{M}) \leq \min(rg(\mathcal{A}^T), rg(\mathcal{A})) = rg(\mathcal{A}) \leq N $. Ainsi si $N<H$, alors $\mathcal{M}$ n'est pas inversible.
+On a alors $\mathcal{M} = 2\pi(\mathcal{A}^T)\mathcal{A}$. On en déduit un majorant du rang de $\mathcal{M}$: $\mathrm{rg}(\mathcal{M}) \leq \min(\mathrm{rg}(\mathcal{A}^T), \mathrm{rg}(\mathcal{A})) = \mathrm{rg}(\mathcal{A}) \leq N $. Ainsi si $N<H$, alors $\mathcal{M}$ n'est pas inversible.
 
 On remarque également qu'elle ne l'est pas non plus lorsque $H$ et $N$ sont proches par exemple pour $H=N=10$. 
 Il serait interressant d'approfondir ce point pour savoir si cela se traduit par le fait que $E$ admette plusieurs minimums locaux par exemple.
@@ -246,7 +245,9 @@ On constate que les erreurs sur chaque coefficient est inférieure à $10^{-16}$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Algorithme de descente de gradients}
 
-On définit les paramètres suivants :
+Profitons de cet exemple simple où le système est linéaire pour se familiariser avec l'algorithme de descente de gradients qui sera utile par la suite.
+Le principe est de  partir d'un vecteur $\bm{A}^{(0)}$ choisit aléatoirement puis de calculer itérativement un nouveau vecteur $\bm{A}^{(k)}$ en se déplaçant dans l'espace dans la direction qui minimise le plus l'erreur localement.
+On définit pour cela les paramètres suivants :
 
 \begin{equation}
     \alpha>0, 
@@ -287,8 +288,18 @@ Ainsi, l'équation de récurrence (\ref{eq:équation récurrence descente gradie
 \label{eq:équation récurrence descente gradients v2}
 \end{equation}
 
+Cette équation de récurrence peut se réécrire si $\mathcal M$ est inversible en posant $\bm{A^*} = \mathcal {M}^{-1}\bm{b}$ (qui est l'unique solution du système linéaire) on arrive à l'expression de $\bm{A}^{(k)}-\bm{A^*} $ comme une suite géométrique :
+
+\begin{equation}
+    \begin{aligned}
+        \bm{A}^{(k+1)}-\bm{A^*}  &= (\mathcal{I}_H - \alpha \mathcal{M} )  \bm{A}^{(k)} + \alpha\bm{b} - \mathcal {M}^{-1}\bm{b}\\
+         &= (\mathcal{I}_H - \alpha \mathcal{M} ) (\bm{A}^{(k)}-\bm{A^*} )
+    \end{aligned}
+\label{eq:équation récurrence descente gradients v2}
+\end{equation}
+
 Pour s'assurer de la convergence de cette suite, on s'interresse au rayon spectral, c'est-à-dire le maximum du module des valeurs propres, de $\mathcal{R}_\alpha = (\mathcal{I}_H - \alpha \mathcal{M} )$, noté $\rho(\mathcal{R}_\alpha)$.
-La suite $(\bm{A}^{(n)})_{n\in \mathbb{N}}$ converge si et seulement si la norme de $(\mathcal{R}_\alpha ^n)_{n\in \mathbb{N}}$ tend vers 0. 
+La suite $(\bm{A}^{(k)})_{k\in \mathbb{N}}$ converge si et seulement si la norme de $(\mathcal{R}_\alpha ^k)_{k\in \mathbb{N}}$ tend vers 0, sa limite est alors $\bm A^*$.
 Cela est le cas si et seulement si $\rho(\mathcal{R}_\alpha)<1$ ~\cite{WikiRayonSpectral}.
 De plus, elle convergera d'autant plus vite que son rayon spectral est faible.
 On trace donc ce maximum en fonction de $\alpha$ en figure \ref{fig:choix alpha 1D}. 
@@ -330,6 +341,10 @@ elle correspond au cas limite entre les 2 cas précédents.
 
 On retient donc les résultats obtenus pour $\alpha_{min}$ que l'on montre en figure \ref{fig:résultats 1 DG} avec les valeurs absolues des erreurs de chacun par rapport à la valeur théorique. 
 On constate que les erreurs sur chaque coefficientest inférieure à $10^{-16}$, on valide donc cette seconde méthode.
+
+Cette étude a mis en évidence l'importance du choix du taux d'apprentissage qui détermine le comportement de la suite de vecteurs obtenus lors de la descente de gradients. 
+Cela sera important à garder en tête par la suite, même quand les systèmes à résoudre ne seront plus linéaire et qu'il ne sera plus possible de déterminer à l'avance les valeurs optimales. 
+Elles devront donc être testées empiriquement.
 
 
 \begin{figure}
@@ -376,14 +391,12 @@ ${\mathcal{N}}(t,\bm{P})$ correspond donc à la sortie d'un réseau de neurones 
 \end{figure}
 
 On définit une nouvelle fonction d'erreur, calculée à partir des $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N-1} $ 
-%(Contrairement à la fonction d'erreur définie pour les solutions en série de Fourier, 
-%on définit ici les points de tests de façon à inclure $x_N = 1$ car la fonction définie n'est plus nécessairement périodique, alors que ce point aurait été redondant avec le point $x_0 = 0$ pour les fonctions 1\_périodiques)
 
 \begin{equation}
         E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}}{dt}(t_i) + \cos(2\pi t_i))^2
 \label{eq:erreur NN}
 \end{equation}
-{\color{red}L'équation~(\ref{eq:erreur NN}) est-elle correcte ?}
+
 
 On calcule ensuite les expressions analytiques des dérivées partielles de $E(\bm{P})$ par rapport à chaque paramètre ajustable, puis on cherche à minimiser cette erreur à l'aide de l'algorithme de descente de gradients.
 
@@ -400,8 +413,15 @@ On obtient une erreur de $1,2.10^{-2}$ et une estimation visible en figure \ref{
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Mouvement de précession}
-\label{section_precession}
-On s'intéresse désormais au problème de la précession d'un moment magnétique dans un champ magnétique constant. On le modélise par les équations suivantes pour $t\in [t_a=0,t_b=1]$ :
+\label{chap:precession}
+On s'intéresse désormais à l'équation de la précession de Larmor~\cite{PrecessionLarmor} pour un moment magnétique $\bm{M} \in \mathbb{R}^3$ autour d'un vecteur ${\bm{\omega}}$ pointant le long de l'axe $z$ et dont la composante sur cet axe est constante, soit $\bm{\omega}=\omega_z{\bm z}$.
+
+\begin{equation}
+    \frac{d\bm{M}}{dt} = \bm{\omega}\times\bm{M} 
+    \label{eq:equation Larmor}
+\end{equation}
+
+Cette équation implique que $\frac{d\bm{M}}{dt} $ et $\bm{\omega}$ soient orthogonaux, ainsi $\frac{dM_z}{dt}=0$. Par conséquent, on ne considérera que les composantes selon les vecteurs $\bm{x}$ et $\bm{y}$ et l'équation~\ref{eq:equation Larmor} se réécrit ainsi comme un système de deux équations différentielles couplées : 
 
 \begin{equation}
 \left\{
@@ -411,7 +431,8 @@ On s'intéresse désormais au problème de la précession d'un moment magnétiqu
     \end{aligned}
 \right.
 \end{equation}
-avec les conditions initiales
+
+On cherchera les solutions pour $t\in [t_a=0,t_b=1]$, en imposant les conditions initiales suivantes :
 \begin{equation}
 \left\{
     \begin{aligned}
@@ -421,7 +442,9 @@ avec les conditions initiales
 \right.
 \label{eq:équations couplées}
 \end{equation}
-dont la solution analytique vaut
+
+On pourra ensuite comparer nos résultats avec la solution analytique connue de ce système qui vaut :
+
 \begin{equation}
 \left\{
     \begin{aligned}
