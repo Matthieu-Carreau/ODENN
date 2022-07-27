@@ -38,7 +38,11 @@
 \maketitle
 
 \begin{abstract}
-    {\color{red}{Faire un résumé de ce qu'il y a dans ce document}}
+    On cherche à mettre aux points méthodes numériques permettant d'étudier la précession d'un moment magnétique avec amortissement décrite par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}. 
+    On utilise pour cela des méthodes d'optimisation pour trouver des solutions approchées à des équations différentielles, en fixant un modèle de fonction impliquant un réseau de neurones. 
+    On montre comment méthodes d'optimisation, en particulier la descente de gradients, permettent de minimiser une fonction d'erreur afin d'approcher une solution d'une équation différentielle.
+    Ces méthodes sont d'abord testées pour retrouver une primitive d'une fonction trigonométrique, puis pour résoudre un système de deux équations couplées, décrivant la précession de Larmor~\cite{PrecessionLarmor}, et enfin sur un système d'équation résultant d'une transformation de l'quation de Landau-Lifshitz-Gilbert, qui décrit le phénomène d'ammortissement.
+
 \end{abstract}
     
 \tableofcontents{}
@@ -82,7 +86,7 @@ On définit ensuite une fonction d'erreur, que l'on calcule à partir de $N$ poi
 
 Il s'agira enfin d'utiliser différentes méthodes d'optimisation propres au réseaux de neurones afin de trouver un vecteur $\bm P$ qui minimise (et idéalement annule) cette fonction d'erreur.
 
-On s'interresera dans le chapitre~\ref{chap:ode_1} à la résolution d'une équation différentielle à une dimension, en choisissant d'abord le terme ajustable $\mathcal{N}(t,\bm{P})$ sous la forme de séries de Fourier, puis comme la sortie d'un réseau de neurones.
+On s'intéressera dans le chapitre~\ref{chap:ode_1} à la résolution d'une équation différentielle à une dimension, en choisissant d'abord le terme ajustable $\mathcal{N}(t,\bm{P})$ sous la forme de séries de Fourier, puis comme la sortie d'un réseau de neurones.
 On appliquera dans le chapitre~\ref{chap:precession} les mêmes méthodes pour la résolution d'un système de deux équations couplées représentant le mouvement de précession décrit par l'équation de Larmor.
 On étudiera ensuite dans le chapitre~\ref{chap:precession_gilbert} l'effet de l'ajout du terme d'amortissement introduit dans l'équation de Landau-Lifshitz-Gilbert, en utilisant les méthodes qui auront été établies dans les premiers chapitres.
 Enfin dans la section~\ref{Conclusion}, je discuterai des résultats obtenus et proposerai quelques perspectives.
