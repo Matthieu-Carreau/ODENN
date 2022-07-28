@@ -12,7 +12,7 @@
 \usepackage{bm}
 \usepackage{hyperref}
 
-\title{Résolution de l'équation de précession d'un moment magnétique par réseau de neurones}
+\title{Résolution de l'équation de précession d'un moment magnétique par réseaux de neurones}
 
 \author{
   Matthieu Carreau\\
@@ -38,24 +38,28 @@
 \maketitle
 
 \begin{abstract}
-    On cherche à mettre aux points méthodes numériques permettant d'étudier la précession d'un moment magnétique avec amortissement décrite par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}. 
-    On utilise pour cela des méthodes d'optimisation pour trouver des solutions approchées à des équations différentielles, en fixant un modèle de fonction impliquant un réseau de neurones. 
-    On montre comment méthodes d'optimisation, en particulier la descente de gradients, permettent de minimiser une fonction d'erreur afin d'approcher une solution d'une équation différentielle.
-    Ces méthodes sont d'abord testées pour retrouver une primitive d'une fonction trigonométrique, puis pour résoudre un système de deux équations couplées, décrivant la précession de Larmor~\cite{PrecessionLarmor}, et enfin sur un système d'équation résultant d'une transformation de l'quation de Landau-Lifshitz-Gilbert, qui décrit le phénomène d'ammortissement.
+    Ce rapport présente une méthode numérique permettant l'étude de la précession d'un moment magnétique dans un champ extérieur en présence d'un amortissement. 
+    La démarche consiste à décrire et mettre en oeuvre des méthodes d'optimisation pour déterminer des solutions approchées à des équations différentielles, éventuellement non-linéaires, en fixant un modèle de solutions impliquant un réseau de neurones. 
+    On montrera en particulier par une méthode de descente de gradients, comment minimiser une fonction de cout afin d'approcher la solution de l'équation différentielle à résoudre.
+    La mise en oeuvre numérique sera ensuite comparée à une suite de problèmes formée par ordre de difficulté croissante. 
+    D'une part nous chercherons à retrouver une primitive d'une fonction trigonométrique, puis nous évaluerons la solution d'un système de deux équations différentielles couplées, décrivant la précession de Larmor~\cite{PrecessionLarmor}.
+    Enfin nous évaluerons notre approche sur l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}, qui décrit le phénomène d'ammortissement.
 
 \end{abstract}
     
 \tableofcontents{}
-    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 \label{Introduction}
 
-Ce rapport est le compte-rendu d'un stage d'un mois ayant pour objet la mise en place et l'implémentation de méthodes de résolution d'équations différentielles à l'aide de réseau de neurones. 
+Ce rapport est le compte-rendu d'un stage d'un mois à \href{https://www.idpoisson.fr}{l'Institut Denis Poisson de Tours} ayant pour objet la mise en place et l'implémentation de méthodes de résolution d'équations différentielles à l'aide de réseaux de neurones. 
 Le problème physique étudié est celui de la précession d'un moment magnétique dans un champ magnétique, que l'on décrira dans un premier temps par l'équation de précession de Larmor~\cite{PrecessionLarmor}, puis par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}.
-Cette seconde version de l'équation ne possède pas de solution analytique connue, c'est pourquoi il est pertinent de se pencher sur des méthodes numériques pour en obtenir des solutions approchées.
+Cette seconde version de l'équation possède une solution analytique obtenue par projection transverse dans le cas d'une precession dans un champ statique et homogène mais on ne lui connait pas de solution analytique en dehors de ce cas.
+C'est pourquoi il est pertinent de se pencher sur des méthodes numériques pour en obtenir des solutions approchées.
 
 L'approche proposée ici consiste à utiliser des réseaux de neurones, connus pour leur capacité à approcher des fonctions~\cite{FunctionApproximation}, pour trouver des fonctions "proches" d'être solution d'une équation différentielle.
-On utilise par conséquent les réseaux de neurones à la manière de ~\cite{MLWithApp}, ~\cite{ANNforOPDEs} et ~\cite{HighOrderHybrid}, en utilisant les algorithmes d'optimisation connus pour minimiser une fonction d'erreur, qui indique dans quelle mesure une fonction candidate, construite à partir du réseau de neurones, est proche d'être solution.
+On utilise par conséquent les réseaux de neurones en suivant les références~\cite{MLWithApp,ANNforOPDEs,HighOrderHybrid}, en utilisant les algorithmes d'optimisation connus pour minimiser une fonction de cout (désignée aussi sous la nom de fonction erreur), qui indique dans quelle mesure une fonction candidate, construite à partir du réseau de neurones, est proche de la solution.
 
 On écrira lorsque cela sera possible l'équation différentielle d'inconnue $\bm{M}: \mathbb{R} \to  \mathbb{R}^n$ (vecteur adimensionné représentant le moment magnétique) sous une forme similaire à la suivante, où $\bm{g}:  \mathbb{R}\times\mathbb{R}^n \to  \mathbb{R}^n$ est une foncion connue :
 
