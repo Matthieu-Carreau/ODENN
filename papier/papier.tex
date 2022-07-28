@@ -12,7 +12,7 @@
 \usepackage{bm}
 \usepackage{hyperref}
 
-\title{Résolution de l'équation de précession d'un moment magnétique par réseau de neurones}
+\title{Résolution de l'équation de précession d'un moment magnétique par réseaux de neurones}
 
 \author{
   Matthieu Carreau\\
@@ -38,10 +38,12 @@
 \maketitle
 
 \begin{abstract}
-    On cherche à mettre aux points méthodes numériques permettant d'étudier la précession d'un moment magnétique avec amortissement décrite par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}. 
-    On utilise pour cela des méthodes d'optimisation pour trouver des solutions approchées à des équations différentielles, en fixant un modèle de fonction impliquant un réseau de neurones. 
-    On montre comment méthodes d'optimisation, en particulier la descente de gradients, permettent de minimiser une fonction d'erreur afin d'approcher une solution d'une équation différentielle.
-    Ces méthodes sont d'abord testées pour retrouver une primitive d'une fonction trigonométrique, puis pour résoudre un système de deux équations couplées, décrivant la précession de Larmor~\cite{PrecessionLarmor}, et enfin sur un système d'équation résultant d'une transformation de l'quation de Landau-Lifshitz-Gilbert, qui décrit le phénomène d'ammortissement.
+    Ce rapport présente une méthode numérique permettant l'étude de la précession d'un moment magnétique dans un champ extérieur en présence d'un amortissement. 
+    La démarche consiste à décrire et mettre en oeuvre des méthodes d'optimisation pour déterminer des solutions approchées à des équations différentielles, éventuellement non-linéaires, en fixant un modèle de solutions impliquant un réseau de neurones. 
+    On montrera en particulier par une méthode de descente de gradients, comment minimiser une fonction de cout afin d'approcher la solution de l'équation différentielle à résoudre.
+    La mise en oeuvre numérique sera ensuite comparée à une suite de problèmes formée par ordre de difficulté croissante. 
+    D'une part nous chercherons à retrouver une primitive d'une fonction trigonométrique, puis nous évaluerons la solution d'un système de deux équations différentielles couplées, décrivant la précession de Larmor~\cite{PrecessionLarmor}.
+    Enfin nous évaluerons notre approche sur l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}, qui décrit le phénomène d'ammortissement.
 
 \end{abstract}
     
