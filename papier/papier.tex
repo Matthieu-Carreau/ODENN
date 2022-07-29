@@ -50,7 +50,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
-\label{Introduction}
+\label{chap:introduction}
 
 Ce rapport est le compte-rendu d'un stage d'un mois à \href{https://www.idpoisson.fr}{l'Institut Denis Poisson de Tours} ayant pour objet la mise en place et l'implémentation de méthodes de résolution d'équations différentielles à l'aide de réseaux de neurones. 
 Le problème physique étudié est celui de la précession d'un moment magnétique dans un champ magnétique, que l'on décrira dans un premier temps par l'équation de précession de Larmor~\cite{PrecessionLarmor}, puis par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}.
@@ -95,7 +95,7 @@ On étudiera ensuite dans le chapitre~\ref{chap:gilbert} l'effet de l'ajout du t
 Enfin dans le chapitre~\ref{chap:conclusion}, je discuterai des résultats obtenus et proposerai quelques perspectives.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Equation diff\'erentielle \`a une dimension}
+\chapter{Equation différentielle à une dimension}
 \label{chap:ode_1}
 
 On souhaite se familiariser avec différentes méthodes numériques appliquées à la résolution d'une équation différentielle d'ordre 1 en une dimension.
@@ -112,22 +112,28 @@ On considère alors $M$, une fonction réelle à une variable satisfaisant l'éq
     \label{eq:equa_dif}
 \end{equation}
 
-Cherchons à mettre en {\oe}uvre les méthodes présentées dans la section~\ref{Introduction} sur l'équation~(\ref{eq:equa_dif}), pour tout $t\in [t_a=0,t_b=1]$.
+Cherchons à mettre en {\oe}uvre les méthodes présentées dans la section~\ref{chap:introduction} sur l'équation~(\ref{eq:equa_dif}), pour tout $t\in [t_a=0,t_b=1]$.
 L'équation~(\ref{eq:equa_dif}) et sa condition initiale donnée en $t=0$, admettent une solution analytique unique qui s'écrit
 \begin{equation}
     {M}(t) = M_0 - \frac{1}{2\pi}\sin(2\pi t)
     \label{eq:solution_analytique}
 \end{equation}
 
-Cette solution exacte permettra d'évaluer par différence la qualité des solutions numériques trouvées.
+L'équation~(\ref{eq:solution_analytique}) permettra d'évaluer la qualité des solutions numériques trouvées par différence.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Solutions en séries de Fourier}
+\section{Solution en séries de Fourier}
 \label{sec:sol_ser_fourier_1d}
 
-On cherche des solutions numériques approchées de l'équation~(\ref{eq:equa_dif}) sous la forme de séries de Fourier tronquées avec $H$ harmoniques.
-On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux termes, le premier $M_0$ constant non ajustable vérifiant la condition initiale, et le deuxième $\mathcal{N}(t,\bm{A})$ dépendant des coefficients $(A_m)_{H\in \llbracket 1,H \rrbracket}$ représentés par le vecteur $\bm{A}$, construit de façon à ne pas influencer la valeur initiale de la fonction.
-
+On cherche des solutions numériques approchées de l'équation~(\ref{eq:equa_dif}) sous la forme de séries de Fourier tronquées en un nombre entier $H$ d'harmoniques.
+On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux termes: 
+\begin{itemize}
+    \item le premier terme est la constante $M_0$, paramètre non ajustable vérifiant la condition initiale,
+    \item le deuxième terme est $\mathcal{N}(t,\bm{A})$, une fonction temporelle développée sur une base et dépendant d'un vecteur ${\bm A}$ de dimension $H$, dont les valeurs sont notées $(A_m)_{m\in \llbracket 1,H \rrbracket}$.
+    Ce vecteur est construit de façon à ne pas influencer la condition initiale de la fonction.
+\end{itemize}
+Ainsi on s'assure en particulier que $\mathcal{N}(0,\bm{A})=0$ de sorte que la solution approchée coïncide avec la solution exacte à $t=0$. 
+En équations cela donne
 \begin{equation}
     \left\{
     \begin{aligned}
@@ -138,7 +144,8 @@ On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux te
     \label{eq:solution_fourier}
 \end{equation}
 
-On définit une fonction d'erreur pour ces solutions potentielles, à partir de la valeur de la dérivée de $\Tilde{M}$ aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
+On définit une fonction de cout $E$ à minimiser dans un espace $L^2$, obtenue à partir de la valeur de la dérivée de $\Tilde{M}$ sur un intervalle temporel de $N$ points représentant l'intervalle de $t$ sur lequel on souhaite déterminer la solution approchée. 
+Nous posons $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
 
 \begin{equation}
     \begin{aligned}
@@ -148,14 +155,15 @@ On définit une fonction d'erreur pour ces solutions potentielles, à partir de 
     \label{eq:fonction_erreur}
 \end{equation}
 
-On cherche à présent le minimum de $E$ en tant que fonction de $\bm{A}$.
+Puisque le vecteur $\bm{A}$ représente maintenant un ensemble de paramètres ajustables, on cherche le minimum de $E$ en tant que fonction de $\bm{A}$.
 Une condition nécessaire sur $\bm{A}$ pour être un antécédent d'un minimum est
 \begin{equation}
-    {\forall l \in\llbracket 1,H \rrbracket, \frac{\partial E}{\partial A_l} = 0}
+    \frac{\partial E}{\partial A_l} = 0, {\forall l \in\llbracket 1,H \rrbracket}
     \label{eq:condition_necessaire_A_l}
 \end{equation}
 
-Or ces dérivées partielles sont données pour $l \in \llbracket 1,H \rrbracket$ par :
+On doit maintenant déterminer les dérivées partielles de $E$ par rapport à chacun des coefficients de $\bm{A}$.
+Ces dérivées partielles sont données pour $l \in \llbracket 1,H \rrbracket$ par :
 
 \begin{equation}
     \frac{\partial E}{\partial A_l} =
@@ -164,15 +172,15 @@ Or ces dérivées partielles sont données pour $l \in \llbracket 1,H \rrbracket
     \label{eq:gradient}
 \end{equation}
 
-
-Les deux méthodes suivantes ont pour objectif de trouver les coefficients $A_m$ avec ${m\in \llbracket 1,H \rrbracket}$ qui vérifient la condition \ref{eq:condition_necessaire_A_l}, et de vérifier que le vecteur des coefficients trouvés correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = -\frac{1}{2\pi}\delta_1^m$.
-
+Nous devons donc trouver les coefficients $A_m$ avec ${m\in \llbracket 1,H \rrbracket}$ qui vérifient la condition \ref{eq:condition_necessaire_A_l}, et vérifier que le vecteur des coefficients trouvés correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = -\frac{1}{2\pi}\delta_1^m$.
+Pour celà nous allons développer deux approches.
+Dans la section~\ref{sec:inversion_sys_lin} nous inverserons un système linéaire et dans la section~\ref{sec:algo_grad} nous formerons un algorithme fondé sur une descente de gradients.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Inversion du système linéaire}
+\subsection{Inversion d'un système linéaire}
+\label{sec:inversion_sys_lin}
 
-Dans le cas de cette modélisation pour la fonction approchée, la condition \ref{eq:condition_necessaire_A_l} correspond à un système linéaire de $H$ équations.
-On peut le représenter en définissant les matrices suivantes :
+Pour la fonction approchée $\tilde{M}$, la condition \ref{eq:condition_necessaire_A_l} qui est équivalente à l'expression~\ref{eq:gradient}, est en réalité un système linéaire de $H$ équations, que l'on peut représenter en définissant les matrices suivantes :
 
 \begin{equation}
     \mathcal{M} = (r_{m,l})_{(m,l)\in \llbracket 1, H\rrbracket ^2},
@@ -202,48 +210,51 @@ On peut le représenter en définissant les matrices suivantes :
     \label{eq:definition_coefficients}
 \end{equation}
 
-On souhaite alors résoudre le système linéaire en écrivant l'équation matricielle le représentant, c'est-à-dire :
+On résoud ce système linéaire en écrivant l'équation matricielle qui le représente, c'est-à-dire :
 
 \begin{equation}
     \mathcal{M} \bm{A} = \bm{b} \Leftrightarrow \bm{A} = \mathcal{M}^{-1}\bm{b}
     \label{eq:equation_matricielle}
 \end{equation}
 
-On réalise l'implémentation en python, en instanciant les matrices définies précédemment et à l'aide de la bibliothèque \emph{numpy}.
+Il ne reste plus maintenant qu'à réaliser l'implémentation numérique associée en python, en instanciant la matrice ${\mathcal{M}}$ et les vecteurs $\bm{A}$ et $\bm{b}$ à l'aide de la bibliothèque \href{https://numpy.org}{\emph{numpy}}.
 
-On peut constater que la matrice $\mathcal{M}$ n'est pas toujours inversible selon le choix de $H$ et $N$.
-En effet, on peut montrer que c'est nécessairement le cas lorsque $H>N$. Il suffit pour cela d'écrire la matrice $\mathcal{M}$ en fonction de la matrice $\mathcal{A}$ de taille $N \times H$, dont les coefficients sont données par $ \forall (i,j) \in \llbracket 1, N\rrbracket \times \llbracket 1, H\rrbracket, a_{i,j} = j \cos(2 \pi j t_i)$.
-On a alors $\mathcal{M} = 2\pi(\mathcal{A}^T)\mathcal{A}$. On en déduit un majorant du rang de $\mathcal{M}$: $\mathrm{rg}(\mathcal{M}) \leq \min(\mathrm{rg}(\mathcal{A}^T), \mathrm{rg}(\mathcal{A})) = \mathrm{rg}(\mathcal{A}) \leq N $. Ainsi si $N<H$, alors $\mathcal{M}$ n'est pas inversible.
+Malheureusement la matrice $\mathcal{M}$ n'est pas toujours inversible selon le choix de $H$ et $N$.
+En effet, on peut montrer que c'est nécessairement le cas lorsque $H>N$. 
+Il suffit pour cela d'écrire la matrice $\mathcal{M}$ en fonction de la matrice $\mathcal{A}$ de taille $N \times H$, dont les coefficients sont données par $ \forall (i,j) \in \llbracket 1, N\rrbracket \times \llbracket 1, H\rrbracket, a_{i,j} = j \cos(2 \pi j t_i)$.
+On a alors $\mathcal{M} = 2\pi(\mathcal{A}^T)\mathcal{A}$. 
+On déduit un majorant du rang de $\mathcal{M}$: $\mathrm{rg}(\mathcal{M}) \leq \min(\mathrm{rg}(\mathcal{A}^T), \mathrm{rg}(\mathcal{A})) = \mathrm{rg}(\mathcal{A}) \leq N $. 
+Ainsi si $N<H$, $\mathcal{M}$ n'est pas inversible.
 
-On remarque également qu'elle ne l'est pas non plus lorsque $H$ et $N$ sont proches par exemple pour $H=N=10$.
-Il serait interressant d'approfondir ce point pour savoir si cela se traduit par le fait que $E$ admette plusieurs minima locaux par exemple.
+De plus, cette matrice n'est pas non plus inversible lorsque $H$ et $N$ sont proches l'un de l'autre, par exemple pour $H=N=10$.
+Il serait intéressant d'approfondir cet aspect pour savoir si cela se traduit par le fait que la fonction $E$ admette plusieurs minima locaux.
 
-Il semble que choisir $N\gg H$ soit suffisant pour que $\mathcal{M}$ soit inversible.
+En réalisant des expériences numériques, il semble que choisir $N\gg H$ soit suffisant pour que $\mathcal{M}$ soit inversible.
 On choisira $H=10, N=100$ pour la suite.
-On obtient alors les coefficients présentés dans la figure \ref{fig:resultats_1_inv} avec les valeurs absolues des erreurs de chacun de ces coéfficients par rapport à leur valeur théorique.
+On obtient alors les coefficients présentés dans la figure \ref{fig:resultats_1_inv}.b avec les valeurs absolues des erreurs de chacun des coefficients trouvés par rapport à leur valeur exacte (Figure \ref{fig:resultats_1_inv}.b).
 On constate que les erreurs sur chaque coefficient est inférieure à $10^{-16}$, ce qui représente la précision machine.
 On valide donc cette première méthode.
-
 
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
         \centering
         \includegraphics[width=0.9\textwidth,height=0.9\textwidth]{coefs_1_inv.jpg}
-        \caption{Coefficients trouvés}
+        \caption{Valeur des coefficients $A_l$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.4\textwidth}
         \centering
         \includegraphics[width=0.9\textwidth,height=0.9\textwidth]{coefs_1_inv_erreur.jpg}
-        \caption{Valeurs absolue de l'erreur pour chaque coefficient}
+        \caption{Erreur des coefficients $A_l$}
     \end{subfigure}
-    \caption{Résultats de la méthode par inversion du système linéaire}
+    \caption{Détermination des $10$ coefficients du vecteur $\bm{A}$ sur une base temporelle donnée, par inversion d'un système linéaire.}
     \label{fig:resultats_1_inv}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Algorithme de descente de gradients}
+\label{sec:algo_grad}
 
 Profitons de cet exemple simple où le système est linéaire pour se familiariser avec l'algorithme de descente de gradients qui sera utile par la suite.
 Le principe est de  partir d'un vecteur $\bm{A}^{(0)}$ choisit aléatoirement puis de calculer itérativement un nouveau vecteur $\bm{A}^{(k)}$ en se déplaçant dans l'espace dans la direction qui minimise le plus l'erreur localement.
@@ -415,7 +426,7 @@ Cela permet de valider notre modèle sur l'étude à une dimension.
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Mouvement de pr\'ecession}
+\chapter{Mouvement de précession}
 \label{chap:precession}
 
 On s'intéresse désormais à l'équation de la précession de Larmor~\cite{PrecessionLarmor} pour un moment magnétique $\bm{M} \in \mathbb{R}^3$ autour d'un vecteur ${\bm{\omega}}$ pointant le long de l'axe $z$ et dont la composante sur cet axe est constante, soit $\bm{\omega}=\omega_z{\bm z}$.
@@ -627,7 +638,7 @@ La solution analytique est représentée en orange, la solution approchée est r
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Pr\'ecession avec amortissement}
+\chapter{Précession avec amortissement}
 \label{chap:gilbert}
 
 Dans ce chapitre, on s'intéresse à déterminer le mouvement de précession d'un moment magnétique $\bm{M} \in \mathbb{R}^3$ amorti.
