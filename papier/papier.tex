@@ -295,7 +295,7 @@ Cette équation de récurrence peut se réécrire si $\mathcal M$ est inversible
         \bm{A}^{(k+1)}-\bm{A^*} & = (\mathcal{I}_H - \alpha \mathcal{M} )  \bm{A}^{(k)} + \alpha\bm{b} - \mathcal {M}^{-1}\bm{b} \\
                                 & = (\mathcal{I}_H - \alpha \mathcal{M} ) (\bm{A}^{(k)}-\bm{A^*} )
     \end{aligned}
-    \label{eq:recurrence_descente_gradients_v2}
+    \label{eq:recurrence_descente_gradients_2D_v2}
 \end{equation}
 
 Pour s'assurer de la convergence de cette suite, on s'interresse au rayon spectral, c'est-à-dire le maximum du module des valeurs propres, de $\mathcal{R}_\alpha = (\mathcal{I}_H - \alpha \mathcal{M} )$, noté $\rho(\mathcal{R}_\alpha)$.
@@ -570,6 +570,7 @@ On peut constater que l'on retrouve bien les coefficients attendus, avec une err
 \end{figure}
 
 \section{Solutions aprochées par un réseau de neurones}
+\label{section:2_NN}
 
 On cherche dans ce paragraphe à approcher la solution du système des 2 équations grâce à un réseau de neurones.
 On choisit l'architecture suivante pour le réseau de neurones :
@@ -584,7 +585,7 @@ On construit alors nos solutions approchées de la façon suivante :
         \Tilde{M}_y(t) & = t\mathcal{N}_y(t, \bm{P})
     \end{aligned}
     \right.
-    \label{eq:solution 2_NN}
+    \label{eq:solution_2_NN}
 \end{equation}
 
 On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$:
@@ -596,7 +597,7 @@ $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 \end{equation}
 
 
-On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.007,50000 itérations, et on lance 3 entraînements pour $N \in \{10,40,100\}$.
+On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.007, 50000 itérations, et on lance 3 entraînements pour $N \in \{10,40,100\}$.
 On obtient les résultats montrés en figure \ref{fig:resultats2NNenfonctiondeN}, où l'axe vertical représente le temps, et les axes horizontaux représentent $M_x$ et $M_y$.
 La solution analytique est représentée en orange, la solution approchée est représentée en bleu, et les points rouges sont les points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
 
@@ -665,11 +666,11 @@ Aprés développement, et le changement d'échelle temporelle $\Tilde{t} = (1+\l
     \label{eq:equations_scalaires_Gilbert}
 \end{equation}
 
-On remarque que l'équation sur $M_z$ est découplée des 2 autres, on cherche ainsi à résoudre celle-ci en premier lieu.
+On remarque que l'équation sur $M_z$ est découplée des 2 autres, on cherche ainsi à résoudre celle-ci en premier lieu en section~\ref{section:Mz}. Puis nous résoudrons les deux équations couplées sur $M_x$ et $M_y$ en section~\ref{section:Mx_My_from_Mz}, en y injectant la solution approchée trouvée pour $M_z$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Résolution de l'équation sur $M_z$}
-
+\label{section:Mz}
 
 On utilise la même approche avec un réseau de neurones que précédemment à l'aide d'un réseau de neurones.
 On réalisera à présent les implémentations en python à l'aide de la bibliothèque TensorFlow.
@@ -684,12 +685,15 @@ Comme précédemment, afin de satisfaire la condition initiale, on cherche les f
 
 On définit la fonction d'erreur suivante :
 
+\begin{equation}
+    E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}_z}{dt}(t_i) - \lambda\omega_z (1-M_z^2) )^2
+\label{eq:erreur_Mz}
+\end{equation}
 
-On fixe les paramètres suivants : $\lambda = 0.3$, nombre de points de tests : $N=30$,
-intervalle d'étude : $[t_a = -1, t_b = 1]$, $M_z(0) = 0$.
+On fixe les paramètres suivants : $\lambda = -0.3$, nombre de points de tests : $N=30$, $h_1 = 16$, $h_2 = 8$, intervalle d'étude : $[t_a = -1, t_b = 1]$, $M_z(0) = 0$.
 Lors des essais d'entraînement du modèle on fait face à plusieurs problèmes.
 On remarque que souvent la sortie du réseau de neurones est quasiment constantesur l'intervalle d'étude.
-Ainsi, il semble que l'entraînement ne consiste alors dans ce cas qu'à ajuster cette valeur constante pour minimser la fonction d'erreur dans le cas où $M_z$ est linéaire par rapport à $\tilde{t}$, (d'après l'équation \ref{eq:solution_NN Mz},pour ${\mathcal{N}}(\Tilde{t},\bm{P}) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
+Ainsi, il semble que l'entraînement ne consiste alors dans ce cas qu'à ajuster cette valeur constante pour minimser la fonction d'erreur dans le cas où $M_z$ est linéaire par rapport à $\tilde{t}$, (d'après l'équation \ref{eq:solution_NN_Mz},pour ${\mathcal{N}}(\Tilde{t},\bm{P}) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
 
 Après plusieurs essais d'entraînement, on remarque que l'on tombe sur l'une ou l'autre des 2 solutions présentées en figure \ref{fig:minima_locaux_Mz}.
 
@@ -734,10 +738,8 @@ Pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur
 On peut alors remettre en question le modèle choisi pour notre réseau de neurones, qui n'est pas forcément le plus adapté.
 On peut par exemple essayer de changer les fonctions d'activation utilisées par les couches intermédiaires, qui étaient des sigmoïdes, et les remplacer par la fonction $relu$.
 
-On a ainsi pu obtenir des résultats satisfaisants visibles en figure \ref{fig:relu_apprentissage_direct} en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, avec un taux d'apprentissage de $10^{-3}$,$N=50$, $[t_a = -1, t_b = 1]$.
+On a ainsi pu obtenir des résultats satisfaisants visibles en figure \ref{fig:relu_apprentissage_direct} en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, avec un taux d'apprentissage de $10^{-3}$, $N=50$, $[t_a = -1, t_b = 1]$.
 L'erreur finale est de 0.018.
-
-Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones.
 
 \begin{figure}
     \centering
@@ -746,11 +748,83 @@ Ainsi, la fonction $relu$ semble faciliter la convergence du réseau de neurones
     \label{fig:relu_apprentissage_direct}
 \end{figure}
 
+Une autre tentative consiste à simplifier l'architecture du réseau de neurones en supprimant la seconde couche intermédiaire pour ne conserver que la première et ainsi diminuer fortement la dimension de l'espace dans lequel on cherche le meilleur vecteur $\bm P$. Avec les paramètres d'entrainement suivants : 100000 itérations, avec un taux d'apprentissage de $1.10^{-2}$,$N=50$, $[t_a = -2, t_b = 2]$.
+L'erreur finale est de $2.7.10^{-4}$, mais continue à décroître.
+On voit en figure~\ref{fig:Mz_sigmoid_1_couche} que les courbes des solutions exactes et approchées se confondent.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Mz_50000_epochs_1_couche.PNG}
+    \caption{Résultats obtenus avec la fonction d'activation $relu$}
+    \label{fig:Mz_sigmoid_1_couche}
+\end{figure}
+
+
 \subsection{Résolution des équations sur Mx et My}
+\label{section:Mx_My_from_Mz}
+
+On reprend dans ce paragraphe l'approche de la section~\ref{section:2_NN}, pour résoudre le système décrivant l'évolution des composantes sur $x$ et sur $y$, en utilisant pour $M_z$ la solution approchée établie dans la section précédente.
+
+On choisit l'architecture suivante pour le réseau de neurones : 
+1 entrée pour la variable temporelle, une unique couche intermédiaire de $h_1=16$ neurones, utilisant la sigmoïde comme fonction d'activation, et enfin 2 neurones de sortie, avec l'identité comme fonction d'activation en sortie.
+Ces deux sorties sont notées respectivement $\mathcal{N}_x(t, \bm{P})$ et $\mathcal{N}_y(t, \bm{P})$, ce qui nous permet de définir comme précédemment nos fonctions candidates :
+
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \Tilde{M}_x(t) &= M_{x0} + t\mathcal{N}_x(t, \bm{P}) \\
+            \Tilde{M}_y(t) &= M_{y0} + t\mathcal{N}_y(t, \bm{P})
+        \end{aligned}
+    \right.
+\label{eq:solution_Mx_My_from M_z}
+\end{equation}
+
+On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$: 
+$\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
+
+\begin{equation}
+        E(\bm{P}) = \frac{1}{N}\sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) + M_y\omega_z + \lambda M_x M_z \omega_z)^2 + (\frac{d\Tilde{M}_y}{dt}(t_i) -M_x\omega_z + \lambda M_y M_z \omega_z)^2
+\label{eq:erreur_Mx_My_from_Mz}
+\end{equation}
+
+
+On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.01, 60000 itérations.
+On obtient les résultats montrés en figure \ref{fig:resultatsMxMy_from_Mz}.
+La solution analytique est représentée en orange, la solution approchée est représentée en bleu, et les points rouges sont les points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{Mx_from_Mz.PNG}
+        \caption{Solution obtenue pour $M_x$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{my_from_mz.PNG}
+        \caption{Solution obtenue pour $M_y$}
+    \end{subfigure}
+       \caption{Représentations graphiques de $M_x$ et  $M_y$ en fonction du temps par le réseau de neurones}
+       \label{fig:resultatsMxMy_from_Mz}
+\end{figure}
+
+
+On trace également l'évolution de la norme de $\bm{\Tilde{M}}(t)$ en figure ~\ref{fig:norme_de_M}, et on constate qu'elle reste comprise entre 0.975 et 1. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{norm over time.PNG}
+    \caption{Norme de la magnétisation en fonction du temps}
+    \label{fig:norme_de_M}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion et perspectives}
 \label{chap:conclusion}
+%L'utilisation de réseau de neurones pour la résolution numérique d'équations différentielles à l'avantage par rapport à d'autres méthodes 
 
 \begin{thebibliography}{8}
     \bibitem{PrecessionLarmor}{\href{https://fr.wikipedia.org/wiki/Pr%C3%A9cession_de_Larmor}{Wikipedia, Précession de Larmor}}
