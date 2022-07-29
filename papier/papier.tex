@@ -856,11 +856,11 @@ Enfin le chapitre~\ref{chap:gilbert} a montré que l'approche mise en place perm
 Il serait utile d'améliorer les permorfances des algorithmes utilisés, en effet les entraînements des réseaux de neurones présentés ici ont rarement atteint une fonction de coût stationnaire. 
 Les entraînements duraient jusqu'à plusieurs dizaines de minutes, et je n'ai pas choisi de les poursuivre plus longtemps lorsque le résultat obtenu était suffisament proche des solutions analytiques. 
 L'amélioration des performances d'entraînement pourrait être réalisée en essayant par exemple des algorithmes d'optimisation plus avancés que la descente de gradients, et également en utilisant d'autres méthodes d'entraînement plus performantes fournies par TensorFlow.
-On pourrait alors approfondir l'étude des différences de précision selon les différentes architectures de réseaux de neurones pour identifier lesquelles sont les plus pertinentes pour répondre à notre problème.
+On pourrait alors approfondir l'étude des différences de précision selon les différentes architectures de réseaux de neurones pour identifier lesquelles sont les plus pertinentes.
 
-Il serait à présent intéressant d'utiliser l'approche présentée dans ce rapport pour tenter de résoudre directement l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert} sans projection, afin de constater si cela permet de retrouver les mêmes solutions que l'équation projetée ou non. 
+Il serait aussi intéressant d'utiliser l'approche présentée dans ce rapport pour tenter de résoudre directement l'équation de Landau--Lifshitz-\-Gilbert~\cite{EquationGilbert} sans projection, afin de constater si cela permet de retrouver les mêmes solutions que l'équation projetée. 
 
-On peut ensuite envisager d'étudier de façon similaire l'équation obtenue en ramplaçant le terme d'amortissement par un terme de nutation, ainsi que l'équation prenant à la fois en compte l'amortissement et la nutation.
+On peut ensuite envisager d'étudier de façon similaire l'équation obtenue en remplaçant le terme d'amortissement par un terme de nutation~\cite{Neeraj2021}, ainsi que l'équation prenant à la fois en compte l'amortissement et la nutation.
 
 
 \begin{thebibliography}{8}
@@ -872,6 +872,7 @@ On peut ensuite envisager d'étudier de façon similaire l'équation obtenue en 
     \bibitem{FunctionApproximation}{\href{https://dl.acm.org/doi/10.5555/1466915.1466916#}{Z.Zainuddin and P.Ong, WSEAS Transactions on Mathematics {\bf 7} no.6, 333–338 (2008)}}
     \bibitem{WikiNN}{\href{https://en.wikipedia.org/wiki/Feedforward_neural_network}{"Réseaux de neurones" (2022), {\it Wikipédia}}}
     \bibitem{WikiRayonSpectral}{\href{https://en.wikipedia.org/wiki/Spectral_radius#Power_sequence}{"Rayon spectral et suites des puissances" (2022), {\it Wikipédia}}}
+    \bibitem{Neeraj2021}{\href{https://www.nature.com/articles/s41567-020-01040-y}{K. Neeraj {\it et al}. Nature Physics {\bf 17}, 245-250 (2021)}}
 \end{thebibliography}
 
 \end{document}
