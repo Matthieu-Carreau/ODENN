@@ -839,7 +839,13 @@ Le chapitre~\ref{chap:precession} a ensuite montré que cette approche donnait �
 Cela a également donné l'occasion de prendre en main la librairie TensorFlow afin d'utiliser les méthodes de différentiation automatique pour le calcul de la dérivée de la fonction candidate ainsi que pour celui des gradients de le fonction de coût.
 Enfin le chapitre~\ref{chap:gilbert} a montré que l'approche mise en place permettait de retrouver de façon approchée les solutions analytiques de l'équation de précession avec amortissement, dans le cas où celle-ci est projetté dans le plan normal à $\bm M$.
 
-Il serait à présent interressant d'utiliser cette méthode pour tenter de résoudre directement l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}
+Il serait utile d'améliorer les permorfances des algorithmes utilisées, en effet les entraînements des réseaux de neurones présentés ici ont rarement atteint une fonction de coût stationnaire. 
+Les entraînements duraient jusqu'à plusieurs dizaines de minutes, et je n'ai pas choisi de les poursuivre plus longtemps lorsque le résultat obtenu était suffisament proche des solutions analytiques. 
+Ainsi, l'amélioration des performances d'entraînement pourrait être réalisée en essayant par exemple des algorithmes d'optimisation plus avancés que la descente de gradients, et également en utilisant d'autres méthodes d'entraînement plus performantes fournies par TensorFlow.
+On pourrait alors approfondir l'étude des différences de précision selon les différentes architecture de réseaux de neurones pour identifier lesquelles sont les plus pertinentes pour répondre à notre problème.
+
+Il serait à présent intérressant d'utiliser l'approche présentée dans ce rapport pour tenter de résoudre directement l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert} sans projection, afin de constater si cela permet de retrouver les mêmes solutions que l'équation projettée ou non. 
+On peut ensuite envisager d'étudier de façon similaire l'équation obtenue en ramplaçant le terme d'maortissement par un terme de nutation, ainsi que l'équation prenant à la fois en compte l'amortissement et la nutation.
 
 
 \begin{thebibliography}{8}
