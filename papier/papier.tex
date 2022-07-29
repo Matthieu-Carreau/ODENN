@@ -309,7 +309,7 @@ Cette équation de récurrence peut se réécrire si $\mathcal M$ est inversible
     \label{eq:recurrence_descente_gradients_2D_v2}
 \end{equation}
 
-Pour s'assurer de la convergence de cette suite, on s'interresse au rayon spectral, c'est-à-dire le maximum du module des valeurs propres, de $\mathcal{R}_\alpha = (\mathcal{I}_H - \alpha \mathcal{M} )$, noté $\rho(\mathcal{R}_\alpha)$.
+Pour s'assurer de la convergence de cette suite, on s'intéresse au rayon spectral, c'est-à-dire le maximum du module des valeurs propres, de $\mathcal{R}_\alpha = (\mathcal{I}_H - \alpha \mathcal{M} )$, noté $\rho(\mathcal{R}_\alpha)$.
 La suite $(\bm{A}^{(k)})_{k\in \mathbb{N}}$ converge si et seulement si la norme de $(\mathcal{R}_\alpha ^k)_{k\in \mathbb{N}}$ tend vers 0, sa limite est alors $\bm A^*$.
 Cela est le cas si et seulement si $\rho(\mathcal{R}_\alpha)<1$ ~\cite{WikiRayonSpectral}.
 De plus, elle convergera d'autant plus vite que son rayon spectral est faible.
@@ -487,20 +487,21 @@ On cherche des solutions numériques approchées sous la forme de séries de Fou
     \label{eq:solution_fourier_couplee_2D}
 \end{equation}
 
-Les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ et $(B_m)_{m\in \llbracket 1,H \rrbracket}$ sont les paramètres à ajuster.
+Les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ et $(B_m)_{m\in \llbracket 1,H \rrbracket}$ des vecteurs ${\bm A}$ et ${\bm B}$ sont les paramètres à ajuster.
 On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,H \rrbracket, B_m = 0 $.
 
-On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
+La fonction de cout pour ces solutions potentielles, en s'intéressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ s'écrit
 
 \begin{equation}
-    E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) - \omega \Tilde{M}_y(t_i))^2 + (\frac{d\Tilde{M}_y}{dt}(t_i) + \omega \Tilde{M}_x(t_i))^2
+    E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) - \omega \Tilde{M}_y(t_i))^2 + (\frac{d\Tilde{M}_y}{dt}(t_i) + \omega \Tilde{M}_x(t_i))^2,
     \label{eq:erreur_descente_gradient_couplees}
 \end{equation}
+où ${\bm P}={\bm A}\cup\bm B$.
 
 En utilisant la méthode de descente de gradients, nous calculons les dérivées partielles suivantes :
 $(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,H \rrbracket}$
 
-On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bm{P}$ comme la concaténation des vecteurs $\bm{A}$ et $\bm{B}$ et le vecteur $\bm{g}$ comme le vecteur contenant les dérivées partielles de $E$ par rapport à chaque composante de $\bm{P}$.
+On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bm{P}$ comme l'union des vecteurs $\bm{A}$ et $\bm{B}$ et le vecteur $\bm{g}$ comme le vecteur contenant les dérivées partielles de $E$ par rapport à chaque composante de $\bm{P}$.
 
 \begin{equation}
     \bm{P}^{(k)} = \begin{pmatrix}
@@ -787,18 +788,18 @@ Ces deux sorties sont notées respectivement $\mathcal{N}_x(t, \bm{P})$ et $\mat
             \Tilde{M}_y(t) &= M_{y0} + t\mathcal{N}_y(t, \bm{P})
         \end{aligned}
     \right.
-\label{eq:solution_Mx_My_from M_z}
+    \label{eq:solution_Mx_My_from M_z}
 \end{equation}
 
-On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$: 
+On définit une fonction d'erreur pour ces solutions potentielles, en s'intéressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$: 
 $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 
 \begin{equation}
-\begin{aligned}
-        E(\bm{P}) = & \frac{1}{N}\sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) + M_y\omega_z + \lambda M_x M_z \omega_z)^2 \\
-        &+ (\frac{d\Tilde{M}_y}{dt}(t_i) -M_x\omega_z + \lambda M_y M_z \omega_z)^2
-\end{aligned}
-\label{eq:erreur_Mx_My_from_Mz}
+    \begin{aligned}
+        E(\bm{P})=&\frac{1}{N}\sum_{i=1}^{N}\left((\frac{d\Tilde{M}_x}{dt}(t_i) + M_y\omega_z + \lambda M_x M_z \omega_z)^2\right.\\
+        &\left.+(\frac{d\Tilde{M}_y}{dt}(t_i) -M_x\omega_z + \lambda M_y M_z \omega_z)^2\right)
+    \end{aligned}
+    \label{eq:erreur_Mx_My_from_Mz}
 \end{equation}
 On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage de 0.01, et 60000 itérations.
 Les résultats sont regroupés dans la figure \ref{fig:resultatsMxMy_from_Mz}.
