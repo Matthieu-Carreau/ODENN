@@ -794,15 +794,15 @@ On définit une fonction d'erreur pour ces solutions potentielles, en s'interres
 $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 
 \begin{equation}
-        E(\bm{P}) = \frac{1}{N}\sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) + M_y\omega_z + \lambda M_x M_z \omega_z)^2 + (\frac{d\Tilde{M}_y}{dt}(t_i) -M_x\omega_z + \lambda M_y M_z \omega_z)^2
+\begin{aligned}
+        E(\bm{P}) = & \frac{1}{N}\sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) + M_y\omega_z + \lambda M_x M_z \omega_z)^2 \\
+        &+ (\frac{d\Tilde{M}_y}{dt}(t_i) -M_x\omega_z + \lambda M_y M_z \omega_z)^2
+\end{aligned}
 \label{eq:erreur_Mx_My_from_Mz}
 \end{equation}
-
-
-On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.01, 60000 itérations.
-On obtient les résultats montrés en figure \ref{fig:resultatsMxMy_from_Mz}.
+On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage de 0.01, et 60000 itérations.
+Les résultats sont regroupés dans la figure \ref{fig:resultatsMxMy_from_Mz}.
 La solution analytique est représentée en orange, la solution approchée est représentée en bleu, et les points rouges sont les points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
-
 
 \begin{figure}
     \centering
@@ -821,13 +821,12 @@ La solution analytique est représentée en orange, la solution approchée est r
        \label{fig:resultatsMxMy_from_Mz}
 \end{figure}
 
-
-On trace également l'évolution de la norme de $\bm{\Tilde{M}}(t)$ en figure ~\ref{fig:norme_de_M}, et on constate qu'elle reste comprise entre 0.975 et 1. 
+On trace également l'évolution de la norme de $\bm{\Tilde{M}}(t)$ dans la figure~\ref{fig:norme_de_M}, et on constate qu'elle reste comprise entre 0.975 et 1. 
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{norm over time.PNG}
-    \caption{Norme de la magnétisation en fonction du temps}
+    \caption{Norme de l'aimantation en fonction du temps}
     \label{fig:norme_de_M}
 \end{figure}
 
