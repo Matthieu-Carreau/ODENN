@@ -738,7 +738,7 @@ Pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur
 On peut alors remettre en question le modèle choisi pour notre réseau de neurones, qui n'est pas forcément le plus adapté.
 On peut par exemple essayer de changer les fonctions d'activation utilisées par les couches intermédiaires, qui étaient des sigmoïdes, et les remplacer par la fonction $relu$.
 
-On a ainsi pu obtenir des résultats satisfaisants visibles en figure \ref{fig:relu_apprentissage_direct} en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, avec un taux d'apprentissage de $10^{-3}$, $N=50$, $[t_a = -1, t_b = 1]$.
+On a ainsi pu obtenir des résultats satisfaisants visibles en figure \ref{fig:relu_apprentissage_direct} en lançant l'entraînement avec les fonctions $relu$ pour 10000 itérations, avec un taux d'apprentissage de $10^{-3}$, $N=50$, $[t_a = -2, t_b = 2]$.
 L'erreur finale est de 0.018.
 
 \begin{figure}
@@ -811,7 +811,16 @@ La solution analytique est représentée en orange, la solution approchée est r
 \end{figure}
 
 
-On trace également l'évolution de la norme de $\bm{\Tilde{M}}(t)$ en figure ~\ref{fig:norme_de_M}, et on constate qu'elle reste comprise entre 0.975 et 1. 
+On peut montrer que l'équation~\ref{eq:equation_Gilbert} implique la conservation de la norme de $M$. En effet, en prenant le produit scalaire des deux membres de l'équation par $M$, il vient :
+\begin{equation}
+    \bm{M} \cdot \frac{d\bm{M}}{dt} = 0 \Leftrightarrow 
+    \frac{d\lVert \bm{M} \rVert ^2}{dt} = 0 
+\label{eq:conservation_norme_M}
+\end{equation}
+
+On peut vérifier que cette condition est respectée par le modèle, sachant que la condition initiale impose $\lVert \bm{M} \rVert=1$.
+On trace pour cela $\lVert \bm{M} \rVert$ en fonction du temps en figure~\ref{fig:norme_de_M}, et on constate qu'elle reste comprise entre 0.975 et 1 sur tout l'intervalle d'étude.
+
 
 \begin{figure}
     \centering
@@ -824,7 +833,14 @@ On trace également l'évolution de la norme de $\bm{\Tilde{M}}(t)$ en figure ~\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion et perspectives}
 \label{chap:conclusion}
-%L'utilisation de réseau de neurones pour la résolution numérique d'équations différentielles à l'avantage par rapport à d'autres méthodes 
+
+L'étude menée dans le chapitre~\ref{chap:ode_1} a permis de comprendre le principe de la résolution d'une équation différentielle par un réseau de neurones, et de montrer que cette approche permttait de résoudre une équation simple à une dimension.
+Le chapitre~\ref{chap:precession} a ensuite montré que cette approche donnait également des résultats concluants dans le cas d'un système de deux équations couplées décrivant un mouvement de précession.
+Cela a également donné l'occasion de prendre en main la librairie TensorFlow afin d'utiliser les méthodes de différentiation automatique pour le calcul de la dérivée de la fonction candidate ainsi que pour celui des gradients de le fonction de coût.
+Enfin le chapitre~\ref{chap:gilbert} a montré que l'approche mise en place permettait de retrouver de façon approchée les solutions analytiques de l'équation de précession avec amortissement, dans le cas où celle-ci est projetté dans le plan normal à $\bm M$.
+
+Il serait à présent interressant d'utiliser cette méthode pour tenter de résoudre directement l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}
+
 
 \begin{thebibliography}{8}
     \bibitem{PrecessionLarmor}{\href{https://fr.wikipedia.org/wiki/Pr%C3%A9cession_de_Larmor}{Wikipedia, Précession de Larmor}}
@@ -832,7 +848,7 @@ On trace également l'évolution de la norme de $\bm{\Tilde{M}}(t)$ en figure ~\
     \bibitem{MLWithApp}{\href{https://doi.org/10.1016/j.mlwa.2021.100058}{T.T.Dufera, Machine Learning With Applications {\bf5} 100058 (2021)}}
     \bibitem{ANNforOPDEs}{\href{https://doi.org/10.1109/72.712178}{I. E. Lagaris, A. Likas and D. I. Fotiadis, IEEE Transactions on Neural Networks {\bf9} no. 5 pp. 987-1000 (1998)}}
     \bibitem{HighOrderHybrid}{\href{https://doi.org/10.1016/j.amc.2006.05.068}{A.Malek and R.Shekari Beidokhti, Applied Mathematics and Computation {\bf183} 260–271(2006)}}
-    \bibitem{FunctionApproximation}{\href{https://dl.acm.org/doi/10.5555/1466915.1466916#}{Z.Zainuddin and P.Ong, WSEAS Transactions on Mathematics Volume {\bf7} Issue 6 pp 333–338(2008)}}
+    \bibitem{FunctionApproximation}{\href{https://dl.acm.org/doi/10.5555/1466915.1466916#}{Z.Zainuddin and P.Ong, WSEAS Transactions on Mathematics Volume {\bf7} Issue 6 pp 333–338 (2008)}}
     \bibitem{WikiNN}{\href{https://en.wikipedia.org/wiki/Feedforward_neural_network}{Wikipedia, Réseaux de neurones}}
     \bibitem{WikiRayonSpectral}{\href{https://en.wikipedia.org/wiki/Spectral_radius#Power_sequence}{Wikipedia, Rayon spectral et suites des puissances}}
 \end{thebibliography}
