@@ -40,10 +40,10 @@
 \begin{abstract}
     Ce rapport présente une méthode numérique permettant l'étude de la préces\-sion d'un moment magnétique dans un champ extérieur en présence d'un amortissement.
     On décrira et mettra en {\oe}uvre des méthodes d'optimisation pour déterminer des solutions approchées d'équations différentielles, éventuellement non-linéaires, en fixant un modèle de solutions impliquant un réseau de neurones. 
-    En particulier, on montrera une méthode de descente de gradients qui permet de minimiser une fonction de cout servant à approcher la solution de l'équation différentielle.
+    En particulier, on montrera une méthode de descente de gradients qui permet de minimiser une fonction de coût servant à approcher la solution de l'équation différentielle.
     La mise en {\oe}uvre numérique sera ensuite comparée à une suite de problèmes formée par ordre de difficulté croissante. 
     D'une part nous chercherons à retrouver une primitive d'une fonction trigonométrique, puis nous évaluerons la solution d'un système de deux équations différentielles couplées, décrivant la précession de Larmor.
-    Enfin nous évaluerons notre approche sur l'équation de Landau-Lifshitz-Gilbert, qui décrit le phénomène d'ammortissement.
+    Enfin nous évaluerons notre approche sur l'équation de Landau-Lifshitz-Gilbert, qui décrit le phénomène d'amortissement.
 \end{abstract}
     
 \tableofcontents{}
@@ -54,11 +54,11 @@
 
 Ce rapport est le compte-rendu d'un stage d'un mois à \href{https://www.idpoisson.fr}{l'Institut Denis Poisson de Tours} ayant pour objet la mise en place et l'implémentation de méthodes de résolution d'équations différentielles à l'aide de réseaux de neurones. 
 Le problème physique étudié est celui de la précession d'un moment magnétique dans un champ magnétique, que l'on décrira dans un premier temps par l'équation de précession de Larmor~\cite{PrecessionLarmor}, puis par l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert}.
-Cette seconde version de l'équation possède une solution analytique obtenue par projection transverse dans le cas d'une precession dans un champ statique et homogène mais on ne lui connait pas de solution analytique en dehors de ce cas.
+Cette seconde version de l'équation possède une solution analytique obtenue par projection transverse dans le cas d'une precession dans un champ statique et homogène mais on ne lui connaît pas de solution analytique en dehors de ce cas.
 C'est pourquoi il est pertinent de se pencher sur des méthodes numériques pour en obtenir des solutions approchées.
 
 L'approche proposée ici consiste à utiliser des réseaux de neurones, connus pour leur capacité à approcher des fonctions~\cite{FunctionApproximation}, pour trouver des fonctions "proches" d'être solution d'une équation différentielle.
-On utilise par conséquent les réseaux de neurones en suivant les références~\cite{MLWithApp,ANNforOPDEs,HighOrderHybrid}, en utilisant les algorithmes d'optimisation connus pour minimiser une fonction de cout (désignée aussi sous la nom de fonction erreur), qui indique dans quelle mesure une fonction candidate, construite à partir du réseau de neurones, est proche de la solution.
+On utilise par conséquent les réseaux de neurones en suivant les références~\cite{MLWithApp,ANNforOPDEs,HighOrderHybrid}, en utilisant les algorithmes d'optimisation connus pour minimiser une fonction de coût (désignée aussi sous la nom de fonction erreur), qui indique dans quelle mesure une fonction candidate, construite à partir du réseau de neurones, est proche de la solution.
 
 On écrira lorsque cela sera possible l'équation différentielle d'inconnue $\bm{M}: \mathbb{R} \to  \mathbb{R}^n$ (vecteur adimensionné représentant le moment magnétique) sous une forme similaire à la suivante, où $\bm{g}:  \mathbb{R}\times\mathbb{R}^n \to  \mathbb{R}^n$ est une fonction connue :
 
@@ -73,21 +73,21 @@ On écrira lorsque cela sera possible l'équation différentielle d'inconnue $\b
 \end{equation}
 
 La méthode consiste ensuite à construire une fonction candidate pour l'équation différentielle comme une somme de deux termes.
-le premier est un terme non ajustable vérifiant la condition initiale, et le deuxième dépendant des paramètres à entraîner représentés par le vecteur $\bm{P}$. Ce dernier est construit de façon à ne pas influencer la valeur initiale de la fonction, afin que la condition initiale soit toujours satisfaite, ceci étant réalisé grâce à une fonction $f:\mathcal{R}\to\mathcal{R}$ fixée à l'avance (souvent $f = id_{\mathcal{R}}$)
+Le premier est un terme non ajustable vérifiant la condition initiale, et le deuxième dépendant des paramètres à entraîner représentés par le vecteur $\bm{P}$. Ce dernier est construit de façon à ne pas influencer la valeur initiale de la fonction, afin que la condition initiale soit toujours satisfaite, ceci étant réalisé grâce à une fonction $f:\mathbb{R}\to\mathbb{R}$ fixée à l'avance (souvent $f = id_{\mathbb{R}}$)
 
 \begin{equation}
     \bm{\Tilde{M}}(t) = \bm{M}_0 + f(t)\mathcal{N}(t,\bm{P}) 
 \label{eq:solution_candidate_generique}
 \end{equation}
     
-On définit ensuite une fonction d'erreur, que l'on calcule à partir de $N$ points $(t_i)_{i\in \llbracket 1, N \rrbracket}$ de l'intervalle d'étude, de la forme :
+On définit ensuite une fonction de coût, que l'on calcule à partir de $N$ points $(t_i)_{i\in \llbracket 1, N \rrbracket}$ de l'intervalle d'étude, de la forme :
 
 \begin{equation}
     E ({\bm P})= \sum_{i=1}^{N} (\frac{d\bm{\Tilde{M}}}{dt}(t_i) -g(t_i, \bm{\Tilde{M}}(t_i)))^2   
 \label{eq:fonction_erreur_generique}
 \end{equation}
 
-Il s'agira enfin d'utiliser différentes méthodes d'optimisation propres au réseaux de neurones afin de trouver un vecteur $\bm P$ qui minimise (et idéalement annule) cette fonction d'erreur.
+Il s'agira enfin d'utiliser différentes méthodes d'optimisation propres aux réseaux de neurones afin de trouver un vecteur $\bm P$ qui minimise (et idéalement annule) cette fonction d'erreur.
 
 Dans le chapitre~\ref{chap:ode_1}, on s'intéressera à résoudre une équation différentielle à une dimension, en choisissant d'abord le terme ajustable $\mathcal{N}(t,\bm{P})$ sous la forme d'une série de Fourier, puis comme la sortie d'un réseau de neurones.
 On appliquera dans le chapitre~\ref{chap:precession} les mêmes méthodes pour la résolution d'un système de deux équations différentielles couplées représentant le mouvement de précession décrit par l'équation de Larmor.
@@ -130,7 +130,7 @@ On écrit pour cela la solution approchée $\Tilde{M}$ comme la somme de deux te
 \begin{itemize}
     \item le premier terme est la constante $M_0$, paramètre non ajustable vérifiant la condition initiale,
     \item le deuxième terme est $\mathcal{N}(t,\bm{A})$, une fonction temporelle développée sur une base et dépendant d'un vecteur ${\bm A}$ de dimension $H$, dont les valeurs sont notées $(A_m)_{m\in \llbracket 1,H \rrbracket}$.
-    Ce vecteur est construit de façon à ne pas influencer la condition initiale de la fonction.
+    Cette fonction est construite de façon à ne pas influencer la condition initiale de la fonction.
 \end{itemize}
 Ainsi on s'assure en particulier que $\mathcal{N}(0,\bm{A})=0$ de sorte que la solution approchée coïncide avec la solution exacte à $t=0$. 
 En équations cela donne
@@ -144,7 +144,7 @@ En équations cela donne
     \label{eq:solution_fourier}
 \end{equation}
 
-On définit une fonction de cout $E$ à minimiser dans un espace $L^2$, obtenue à partir de la valeur de la dérivée de $\Tilde{M}$ sur un intervalle temporel de $N$ points pour $t$. 
+On définit une fonction de coût $E$ à minimiser dans un espace $L^2$, obtenue à partir de la valeur de la dérivée de $\Tilde{M}$ sur un intervalle temporel de $N$ points pour $t$. 
 Nous posons $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ :
 
 \begin{equation}
@@ -173,7 +173,7 @@ Ces dérivées partielles sont données pour $l \in \llbracket 1,H \rrbracket$ p
 \end{equation}
 
 Nous devons donc trouver les coefficients $A_m$ avec ${m\in \llbracket 1,H \rrbracket}$ qui vérifient la condition \ref{eq:condition_necessaire_A_l}, et vérifier que le vecteur des coefficients trouvés correspond bien à la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = -\frac{1}{2\pi}\delta_1^m$.
-Pour celà nous allons développer deux approches.
+Pour cela nous allons développer deux approches.
 Dans la section~\ref{sec:inversion_sys_lin} nous inverserons un système linéaire et dans la section~\ref{sec:algo_grad} nous formerons un algorithme fondé sur une descente de gradients.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -304,7 +304,8 @@ Cette équation de récurrence peut se réécrire si $\mathcal M$ est inversible
 \begin{equation}
     \begin{aligned}
         \bm{A}^{(k+1)}-\bm{A^*} & = (\mathcal{I}_H - \alpha \mathcal{M} )  \bm{A}^{(k)} + \alpha\bm{b} - \mathcal {M}^{-1}\bm{b} \\
-                                & = (\mathcal{I}_H - \alpha \mathcal{M} ) (\bm{A}^{(k)}-\bm{A^*} )
+                                & = (\mathcal{I}_H - \alpha \mathcal{M} ) (\bm{A}^{(k)}-\bm{A^*} ) \\
+                                & = (\mathcal{I}_H - \alpha \mathcal{M} )^k (\bm{A}^{(0)}-\bm{A^*} )
     \end{aligned}
     \label{eq:recurrence_descente_gradients_2D_v2}
 \end{equation}
@@ -490,7 +491,7 @@ On cherche des solutions numériques approchées sous la forme de séries de Fou
 Les coefficients $(A_m)_{m\in \llbracket 1,H \rrbracket}$ et $(B_m)_{m\in \llbracket 1,H \rrbracket}$ des vecteurs ${\bm A}$ et ${\bm B}$ sont les paramètres à ajuster.
 On cherche à obtenir la solution analytique, i.e $\forall m \in\llbracket 1,H \rrbracket, A_m = \delta _1 ^m $ et $\forall m \in\llbracket 1,H \rrbracket, B_m = 0 $.
 
-La fonction de cout pour ces solutions potentielles, en s'intéressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ s'écrit
+La fonction de coût pour ces solutions potentielles, en s'intéressant aux $N$ points suivants : $\forall i \in\llbracket 1,N \rrbracket, t_i = \frac{i-1}{N} $ s'écrit
 
 \begin{equation}
     E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}_x}{dt}(t_i) - \omega \Tilde{M}_y(t_i))^2 + (\frac{d\Tilde{M}_y}{dt}(t_i) + \omega \Tilde{M}_x(t_i))^2,
@@ -600,7 +601,8 @@ On construit alors nos solutions approchées de la façon suivante :
     \label{eq:solution_2_NN}
 \end{equation}
 
-On définit une fonction d'erreur pour ces solutions potentielles, en s'interressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$:
+
+On définit une fonction d'erreur pour ces solutions potentielles, en s'intérressant aux $N$ points suivants de l'intervalle $[t_a=-1, t_b=1]$:
 $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
 
 \begin{equation}
@@ -608,11 +610,13 @@ $\forall i \in\llbracket 1,N \rrbracket, t_i = -1 + 2\frac{i-1}{N} $ :
     \label{eq:erreur_2_NN}
 \end{equation}
 
+On réalisera à présent les implémentations en python à l'aide de la bibliothèque TensorFlow.
 
 On choisit ensuite les paramètres d'entraînement suivants : taux d'apprentissage : 0.007, 50000 itérations, et on lance 3 entraînements pour $N \in \{10,40,100\}$.
 On obtient les résultats montrés en figure \ref{fig:resultats2NNenfonctiondeN}, où l'axe vertical représente le temps, et les axes horizontaux représentent $M_x$ et $M_y$.
 La solution analytique est représentée en orange, la solution approchée est représentée en bleu, et les points rouges sont les points correspondant aux points d'entraînement $(t_i)_{i \in \llbracket 1, N \rrbracket}$.
 
+On constate que pour $N=10$ la solution obtenue est trop éloignée de la solution attendue. Cependant, pour cette durée d'entraînement, il ne semble pas apparaître de différence significative entre $N=40$ et $N=100$.
 
 \begin{figure}
     \centering
@@ -645,7 +649,7 @@ La solution analytique est représentée en orange, la solution approchée est r
 Dans ce chapitre, on s'intéresse à déterminer le mouvement de précession d'un moment magnétique $\bm{M} \in \mathbb{R}^3$ amorti.
 Son équation d'évolution est représentée en fonction d'une constante d'amortissement réelle et sans dimension notée $\lambda$ et s'établit, pour simplifier, autour d'un vecteur ${\bm{\omega}}$ pointant le long de l'axe $z$ et dont la composante sur cet axe est constante, soit $\bm{\omega}=\omega_z{\bm z}$.
 
-L'équation considérée prend le nom d'équation de precession avec un terme d'amortissement introduit par Gilbert~\cite{EquationGilbert} et s'écrit
+L'équation considérée prend le nom d'équation de précession avec un terme d'amortissement introduit par Gilbert~\cite{EquationGilbert} et s'écrit
 
 \begin{equation}
     \frac{d\bm{M}}{dt} = (\bm{\omega}-\lambda \frac{d{\bm{M}}}{dt})\times\bm{M}
@@ -685,8 +689,6 @@ On remarque que l'équation sur $M_z$ est découplée des 2 autres, on cherche a
 \label{section:Mz}
 
 On utilise la même approche avec un réseau de neurones que précédemment à l'aide d'un réseau de neurones.
-On réalisera à présent les implémentations en python à l'aide de la bibliothèque TensorFlow.
-
 On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $\bm{P}$.
 Comme précédemment, afin de satisfaire la condition initiale, on cherche les fonction $\tilde{M_z}$ sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},\bm{P})$ représente la sortie du réseau de neurones.
 
@@ -698,13 +700,13 @@ Comme précédemment, afin de satisfaire la condition initiale, on cherche les f
 On définit la fonction d'erreur suivante :
 
 \begin{equation}
-    E(\bm{P}) = \sum_{i=1}^{N} (\frac{d\Tilde{M}_z}{dt}(t_i) - \lambda\omega_z (1-M_z^2) )^2
+    E(\bm{P}) = \frac{1}{N} \sum_{i=1}^{N} (\frac{d\Tilde{M}_z}{dt}(t_i) - \lambda\omega_z (1-M_z^2) )^2
 \label{eq:erreur_Mz}
 \end{equation}
 
 On fixe les paramètres suivants : $\lambda = -0.3$, nombre de points de tests : $N=30$, $h_1 = 16$, $h_2 = 8$, intervalle d'étude : $[t_a = -1, t_b = 1]$, $M_z(0) = 0$.
 Lors des essais d'entraînement du modèle on fait face à plusieurs problèmes.
-On remarque que souvent la sortie du réseau de neurones est quasiment constantesur l'intervalle d'étude.
+On remarque que souvent la sortie du réseau de neurones est quasiment constante sur l'intervalle d'étude.
 Ainsi, il semble que l'entraînement ne consiste alors dans ce cas qu'à ajuster cette valeur constante pour minimser la fonction d'erreur dans le cas où $M_z$ est linéaire par rapport à $\tilde{t}$, (d'après l'équation \ref{eq:solution_NN_Mz},pour ${\mathcal{N}}(\Tilde{t},\bm{P}) = \mu\in \mathbf{R}$ constante, et $M_z(0) = 0$).
 
 Après plusieurs essais d'entraînement, on remarque que l'on tombe sur l'une ou l'autre des 2 solutions présentées en figure \ref{fig:minima_locaux_Mz}.
@@ -742,7 +744,7 @@ l'intégrande est alors une fonction polynomiale en $\tilde{t}$ :
     \label{eq:fonction_erreur_analytique_M_z_lineaire}
 \end{equation}
 
-On remarque alors que cette fonction admet deux minima locaux qui ont pour valeurs approchées : $ \mu_a \approx 0.696$, $E(\mu_a) \approx 3.04$ et $\mu_b \approx -0.574$,$ E(\mu_b) \approx -0.78$.
+On remarque alors que cette fonction admet deux minima locaux qui ont pour valeurs approchées : $ \mu_a \approx 0.696$, $E(\mu_a) \approx 3.04$ et $\mu_b \approx -0.574$, $E(\mu_b) \approx -0.78$.
 Cela est effectivement proche des valeurs que l'on obtient lors des entraînements montrés en figure \ref{fig:minima_locaux_Mz}.
 En effet, sur le premier exemple, la sortie du réseau de neurones varie entre 0.60 et 0.74 sur l'intervalle étudié, et la valeur finale de l'erreur est 3.04, ce qui correspond à $\mu_b$ et $E(\mu_b)$.
 Pour le second exemple, la sortie est comprise entre -0.60 et -0.52, et l'erreur vaut 0.82, ce qui correspond bien au second minimum local $E(\mu_a)$.
@@ -760,7 +762,7 @@ L'erreur finale est de 0.018.
     \label{fig:relu_apprentissage_direct}
 \end{figure}
 
-Une autre tentative consiste à simplifier l'architecture du réseau de neurones en supprimant la seconde couche intermédiaire pour ne conserver que la première et ainsi diminuer fortement la dimension de l'espace dans lequel on cherche le meilleur vecteur $\bm P$. Avec les paramètres d'entrainement suivants : 100000 itérations, avec un taux d'apprentissage de $1.10^{-2}$,$N=50$, $[t_a = -2, t_b = 2]$.
+Une autre tentative consiste à simplifier l'architecture du réseau de neurones en supprimant la seconde couche intermédiaire pour ne conserver que la première et ainsi diminuer fortement la dimension de l'espace dans lequel on cherche le meilleur vecteur $\bm P$. Avec les paramètres d'entraînement suivants : 100000 itérations, avec un taux d'apprentissage de $1.10^{-2}$, $N=50$, $[t_a = -2, t_b = 2]$.
 L'erreur finale est de $2.7.10^{-4}$, mais continue à décroître.
 On voit en figure~\ref{fig:Mz_sigmoid_1_couche} que les courbes des solutions exactes et approchées se confondent.
 
@@ -845,18 +847,19 @@ On trace pour cela $\lVert \bm{M} \rVert$ en fonction du temps en figure~\ref{fi
 \chapter{Conclusion et perspectives}
 \label{chap:conclusion}
 
-L'étude menée dans le chapitre~\ref{chap:ode_1} a permis de comprendre le principe de la résolution d'une équation différentielle par un réseau de neurones, et de montrer que cette approche permttait de résoudre une équation simple à une dimension.
+L'étude menée dans le chapitre~\ref{chap:ode_1} a permis de comprendre le principe de la résolution d'une équation différentielle par un réseau de neurones, et de montrer que cette approche permettait de résoudre une équation simple à une dimension.
 Le chapitre~\ref{chap:precession} a ensuite montré que cette approche donnait également des résultats concluants dans le cas d'un système de deux équations couplées décrivant un mouvement de précession.
 Cela a également donné l'occasion de prendre en main la librairie TensorFlow afin d'utiliser les méthodes de différentiation automatique pour le calcul de la dérivée de la fonction candidate ainsi que pour celui des gradients de le fonction de coût.
 Enfin le chapitre~\ref{chap:gilbert} a montré que l'approche mise en place permettait de retrouver de façon approchée les solutions analytiques de l'équation de précession avec amortissement, dans le cas où celle-ci est projetté dans le plan normal à $\bm M$.
 
-Il serait utile d'améliorer les permorfances des algorithmes utilisées, en effet les entraînements des réseaux de neurones présentés ici ont rarement atteint une fonction de coût stationnaire. 
+Il serait utile d'améliorer les permorfances des algorithmes utilisés, en effet les entraînements des réseaux de neurones présentés ici ont rarement atteint une fonction de coût stationnaire. 
 Les entraînements duraient jusqu'à plusieurs dizaines de minutes, et je n'ai pas choisi de les poursuivre plus longtemps lorsque le résultat obtenu était suffisament proche des solutions analytiques. 
-Ainsi, l'amélioration des performances d'entraînement pourrait être réalisée en essayant par exemple des algorithmes d'optimisation plus avancés que la descente de gradients, et également en utilisant d'autres méthodes d'entraînement plus performantes fournies par TensorFlow.
-On pourrait alors approfondir l'étude des différences de précision selon les différentes architecture de réseaux de neurones pour identifier lesquelles sont les plus pertinentes pour répondre à notre problème.
+L'amélioration des performances d'entraînement pourrait être réalisée en essayant par exemple des algorithmes d'optimisation plus avancés que la descente de gradients, et également en utilisant d'autres méthodes d'entraînement plus performantes fournies par TensorFlow.
+On pourrait alors approfondir l'étude des différences de précision selon les différentes architectures de réseaux de neurones pour identifier lesquelles sont les plus pertinentes pour répondre à notre problème.
 
-Il serait à présent intérressant d'utiliser l'approche présentée dans ce rapport pour tenter de résoudre directement l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert} sans projection, afin de constater si cela permet de retrouver les mêmes solutions que l'équation projettée ou non. 
-On peut ensuite envisager d'étudier de façon similaire l'équation obtenue en ramplaçant le terme d'maortissement par un terme de nutation, ainsi que l'équation prenant à la fois en compte l'amortissement et la nutation.
+Il serait à présent intérressant d'utiliser l'approche présentée dans ce rapport pour tenter de résoudre directement l'équation de Landau-Lifshitz-Gilbert~\cite{EquationGilbert} sans projection, afin de constater si cela permet de retrouver les mêmes solutions que l'équation projetée ou non. 
+
+On peut ensuite envisager d'étudier de façon similaire l'équation obtenue en ramplaçant le terme d'amortissement par un terme de nutation, ainsi que l'équation prenant à la fois en compte l'amortissement et la nutation.
 
 
 \begin{thebibliography}{8}
