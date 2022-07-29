@@ -91,12 +91,11 @@ Il s'agira enfin d'utiliser différentes méthodes d'optimisation propres au ré
 
 Dans le chapitre~\ref{chap:ode_1}, on s'intéressera à résoudre une équation différentielle à une dimension, en choisissant d'abord le terme ajustable $\mathcal{N}(t,\bm{P})$ sous la forme d'une série de Fourier, puis comme la sortie d'un réseau de neurones.
 On appliquera dans le chapitre~\ref{chap:precession} les mêmes méthodes pour la résolution d'un système de deux équations différentielles couplées représentant le mouvement de précession décrit par l'équation de Larmor.
-On étudiera ensuite dans le chapitre~\ref{chap:precession_gilbert} l'effet de l'ajout du terme d'amortissement introduit dans l'équation de Landau-Lifshitz-Gilbert.
-Enfin dans le chapitre~\ref{Conclusion}, je discuterai des résultats obtenus et proposerai quelques perspectives.
-
+On étudiera ensuite dans le chapitre~\ref{chap:gilbert} l'effet de l'ajout du terme d'amortissement introduit dans l'équation de Landau-Lifshitz-Gilbert.
+Enfin dans le chapitre~\ref{chap:conclusion}, je discuterai des résultats obtenus et proposerai quelques perspectives.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Equation différentielle à une dimension}
+\chapter{Equation diff\'erentielle \`a une dimension}
 \label{chap:ode_1}
 
 On souhaite se familiariser avec différentes méthodes numériques appliquées à la résolution d'une équation différentielle d'ordre 1 en une dimension.
@@ -416,7 +415,7 @@ Cela permet de valider notre modèle sur l'étude à une dimension.
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Mouvement de précession}
+\chapter{Mouvement de pr\'ecession}
 \label{chap:precession}
 
 On s'intéresse désormais à l'équation de la précession de Larmor~\cite{PrecessionLarmor} pour un moment magnétique $\bm{M} \in \mathbb{R}^3$ autour d'un vecteur ${\bm{\omega}}$ pointant le long de l'axe $z$ et dont la composante sur cet axe est constante, soit $\bm{\omega}=\omega_z{\bm z}$.
@@ -487,7 +486,7 @@ On définit une fonction d'erreur pour ces solutions potentielles, en s'interres
     \label{eq:erreur_descente_gradient_couplees}
 \end{equation}
 
-On utilise ensuite la méthode de descente de gradients définie précédemment, en calculant les dérivées partielles suivantes :
+En utilisant la méthode de descente de gradients, nous calculons les dérivées partielles suivantes :
 $(\frac{\partial E}{\partial A_l}, \frac{\partial E}{\partial B_l})_{l \in \llbracket 1,H \rrbracket}$
 
 On peut se ramener à l'écriture du cas à une dimension définissant le vecteur $\bm{P}$ comme la concaténation des vecteurs $\bm{A}$ et $\bm{B}$ et le vecteur $\bm{g}$ comme le vecteur contenant les dérivées partielles de $E$ par rapport à chaque composante de $\bm{P}$.
@@ -628,8 +627,8 @@ La solution analytique est représentée en orange, la solution approchée est r
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Précession avec amortissement}
-\label{chap:precession_gilbert}
+\chapter{Pr\'ecession avec amortissement}
+\label{chap:gilbert}
 
 Dans ce chapitre, on s'intéresse à déterminer le mouvement de précession d'un moment magnétique $\bm{M} \in \mathbb{R}^3$ amorti.
 Son équation d'évolution est représentée en fonction d'une constante d'amortissement réelle et sans dimension notée $\lambda$ et s'établit, pour simplifier, autour d'un vecteur ${\bm{\omega}}$ pointant le long de l'axe $z$ et dont la composante sur cet axe est constante, soit $\bm{\omega}=\omega_z{\bm z}$.
@@ -824,7 +823,7 @@ On trace également l'évolution de la norme de $\bm{\Tilde{M}}(t)$ en figure ~\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion et perspectives}
-\label{Conclusion}
+\label{chap:conclusion}
 %L'utilisation de réseau de neurones pour la résolution numérique d'équations différentielles à l'avantage par rapport à d'autres méthodes 
 
 \begin{thebibliography}{8}
