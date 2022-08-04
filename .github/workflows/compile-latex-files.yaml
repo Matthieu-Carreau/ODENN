@@ -10,11 +10,11 @@ jobs:
     - name: Compile LaTeX document
       uses: xu-cheng/latex-action@v2
       with:
-        root_file: papier.tex
+        root_file: rapport.tex
         working_directory: papier
     - name: Download artifacts
       uses: actions/upload-artifact@v3
       with:
         name: PDF
-        path: papier/papier.pdf
+        path: papier/rapport.pdf
         retention-days: 5
