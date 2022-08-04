@@ -659,7 +659,7 @@ L'équation considérée prend le nom d'équation de précession avec un terme d
 Cette équation vectorielle admet plusieures propriétés remarquables que nous allons exploiter.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Projection sur un plan normal à $M$}
+\section{Projection sur un plan normal}
 \label{sec:projection_plan_normal}
 
 Afin de résoudre l'équation~\ref{eq:equation_Gilbert}, une méthode est de prendre le produit vectoriel par $\bm M$ à gauche des deux membres de l'équation~\ref{eq:equation_Gilbert}, et de former une projection sur un plan normal à $\bm{M}$ :
@@ -688,8 +688,8 @@ On remarque que l'équation sur $M_z$ est découplée des 2 autres, on cherche a
 \subsection{Résolution de l'équation sur $M_z$}
 \label{section:Mz}
 
-On utilise la même approche avec un réseau de neurones que précédemment à l'aide d'un réseau de neurones.
-On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés à la sortie unique du réseau de neurones, dont les paramètres sont représenté par le vecteur $\bm{P}$.
+On utilise la même approche que précédemment pour résoudre l'équation à l'aide d'un réseau de neurones.
+On choisit comme architecture du réseau de neurones une entrée pour la variable temporelle, suivie de couches intermédiaires contenant respectivement $h_1$ et $h_2$ neurones, connectés à la sortie unique du réseau de neurones, dont les paramètres sont représentés par le vecteur $\bm{P}$.
 Comme précédemment, afin de satisfaire la condition initiale, on cherche les fonction $\tilde{M_z}$ sous la forme suivante, où ${\mathcal{N}}(\Tilde{t},\bm{P})$ représente la sortie du réseau de neurones.
 
 \begin{equation}
@@ -774,7 +774,7 @@ On voit en figure~\ref{fig:Mz_sigmoid_1_couche} que les courbes des solutions ex
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Résolution des équations sur Mx et My}
+\subsection{Résolution des équations sur $M_x$ et $M_y$}
 \label{section:Mx_My_from_Mz}
 
 On reprend dans ce paragraphe l'approche de la section~\ref{section:2_NN}, pour résoudre le système décrivant l'évolution des composantes sur $x$ et sur $y$, en utilisant pour $M_z$ la solution approchée établie dans la section précédente.
@@ -846,7 +846,7 @@ On trace pour cela $\lVert \bm{M} \rVert$ en fonction du temps en figure~\ref{fi
 \section{Résolution sur les trois composantes simultanément}
 
 On cherche dans cette section à résoudre directement l'équation~\ref{eq:equation_Gilbert} sans réaliser de projection par le produit vectoriel par $\bm M$.
-On réécrit donc l'équation~\ref{eq:equation_Gilbert} comme un système de 3 équations différentielles scalaires, en exprimant simplement sur chaque composante le résultat du produit vectoriel :
+On réécrit l'équation~\ref{eq:equation_Gilbert} comme un système de 3 équations différentielles scalaires, en exprimant simplement l'équation obtenue sur chacune des trois composantes de $\bm M$ 
 
 \begin{equation}
     \left\{
@@ -859,7 +859,7 @@ On réécrit donc l'équation~\ref{eq:equation_Gilbert} comme un système de 3 �
 \label{eq:projection_3_composantes}
 \end{equation}
 
-On construit un réseau de neurones similaires à celui utilisé en section~\ref{section:Mx_My_from_Mz}, mais en prenant cette fois 32 neurones intermédiaires, et 3 neurones de sortie, de façon à définir les trois expressions suivantes pour les solutions approchées : 
+On construit un réseau de neurones similaire à celui utilisé en section~\ref{section:Mx_My_from_Mz}, mais en prenant cette fois 32 neurones intermédiaires, et 3 neurones de sortie, de façon à définir les trois expressions suivantes pour les solutions approchées (figure~\ref {eq:forme_solutions_3NN})
 
 \begin{equation}
     \left\{
@@ -899,6 +899,8 @@ Les solutions approchées, représentées en bleu, sont confondues avec les solu
        \caption{Représentations graphiques de $M_x$, $M_y$ et $M_z$ en fonction du temps par le réseau de neurones}
        \label{fig:resultats_3NN}
 \end{figure}
+
+
 
 On peut vérifier comme précédement la conservation de la norme de $\bm M$ au cours du temps, on la trace en figure~\ref{fig:norme_de_M_3NN}. 
 On constate qu'elle reste comprise entre 0.983 et 1.005.
