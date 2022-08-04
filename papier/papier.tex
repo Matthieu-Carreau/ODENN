@@ -659,10 +659,10 @@ L'équation considérée prend le nom d'équation de précession avec un terme d
 Cette équation vectorielle admet plusieures propriétés remarquables que nous allons exploiter.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Projection en coordonnées cartésiennes}
-\label{sec:projection_cartesiennes}
+\section{Projection sur un plan normal à $M$}
+\label{sec:projection_plan_normal}
 
-En prenant le produit vectoriel par $\bm M$ à gauche des deux membres de l'équation~\ref{eq:equation_Gilbert}, on forme une projection sur un plan normal à $\bm{M}$ :
+Afin de résoudre l'équation~\ref{eq:equation_Gilbert}, une méthode est de prendre le produit vectoriel par $\bm M$ à gauche des deux membres de l'équation~\ref{eq:equation_Gilbert}, et de former une projection sur un plan normal à $\bm{M}$ :
 
 \begin{equation}
     \bm{M}\times\frac{d\bm{M}}{dt} = \bm{M}\times((\bm{\omega}-\lambda \frac{d{\bm{M}}}{dt})\times\bm{M} )
@@ -773,7 +773,7 @@ On voit en figure~\ref{fig:Mz_sigmoid_1_couche} que les courbes des solutions ex
     \label{fig:Mz_sigmoid_1_couche}
 \end{figure}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Résolution des équations sur Mx et My}
 \label{section:Mx_My_from_Mz}
 
@@ -824,8 +824,8 @@ La solution analytique est représentée en orange, la solution approchée est r
        \label{fig:resultatsMxMy_from_Mz}
 \end{figure}
  
-On peut montrer que l'équation~\ref{eq:equation_Gilbert} implique la conservation de la norme de $M$. 
-En effet, en prenant le produit scalaire des deux membres de l'équation par $M$, il vient :
+On peut montrer que l'équation~\ref{eq:equation_Gilbert} implique la conservation de la norme de $\bm M$. 
+En effet, en prenant le produit scalaire des deux membres de l'équation par $\bm M$, il vient :
 \begin{equation}
     \bm{M} \cdot \frac{d\bm{M}}{dt} = 0 \Leftrightarrow 
     \frac{d\lVert \bm{M} \rVert ^2}{dt} = 0 
@@ -842,6 +842,76 @@ On trace pour cela $\lVert \bm{M} \rVert$ en fonction du temps en figure~\ref{fi
     \label{fig:norme_de_M}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Résolution sur les trois composantes simultanément}
+
+On cherche dans cette section à résoudre directement l'équation~\ref{eq:equation_Gilbert} sans réaliser de projection par le produit vectoriel par $\bm M$.
+On réécrit donc l'équation~\ref{eq:equation_Gilbert} comme un système de 3 équations différentielles scalaires, en exprimant simplement sur chaque composante le résultat du produit vectoriel :
+
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \frac{dM_x}{dt} &=-\omega_z M_y - \lambda(M_z \frac{dM_y}{dt} - M_y \frac{dM_z}{dt}) \\
+            \frac{dM_y}{dt} &= \omega_z M_x - \lambda(M_x \frac{dM_z}{dt} - M_z \frac{dM_x}{dt}) \\
+            \frac{dM_z}{dt} &= - \lambda(M_y \frac{dM_x}{dt} - M_x \frac{dM_y}{dt})
+        \end{aligned}
+    \right.
+\label{eq:projection_3_composantes}
+\end{equation}
+
+On construit un réseau de neurones similaires à celui utilisé en section~\ref{section:Mx_My_from_Mz}, mais en prenant cette fois 32 neurones intermédiaires, et 3 neurones de sortie, de façon à définir les trois expressions suivantes pour les solutions approchées : 
+
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \Tilde{M}_x(t) &= M_{x0} + t\mathcal{N}_x(t, \bm{P}) \\
+            \Tilde{M}_y(t) &= M_{y0} + t\mathcal{N}_y(t, \bm{P})\\
+            \Tilde{M}_z(t) &= M_{z0} + t\mathcal{N}_z(t, \bm{P})
+        \end{aligned}
+    \right.
+    \label{eq:forme_solutions_3NN}
+\end{equation}
+
+
+Après entraînement, on trouve les résultats présentés en figure~\ref{fig:resultats_3NN}. 
+Les solutions approchées, représentées en bleu, sont confondues avec les solutions analytiques en orange, établies à partir du système d'équation~\ref{eq:equations_scalaires_Gilbert}.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{Mx_3NN.PNG}
+        \caption{Solution obtenue pour $M_x$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{My_3NN.PNG}
+        \caption{Solution obtenue pour $M_y$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[c]{0.4\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth, height=0.9\textwidth]{Mz_3NN.PNG}
+        \caption{Solution obtenue pour $M_z$}
+    \end{subfigure}
+       \caption{Représentations graphiques de $M_x$, $M_y$ et $M_z$ en fonction du temps par le réseau de neurones}
+       \label{fig:resultats_3NN}
+\end{figure}
+
+On peut vérifier comme précédement la conservation de la norme de $\bm M$ au cours du temps, on la trace en figure~\ref{fig:norme_de_M_3NN}. 
+On constate qu'elle reste comprise entre 0.983 et 1.005.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{Norm_3NN.PNG}
+    \caption{Norme de l'aimantation en fonction du temps}
+    \label{fig:norme_de_M_3NN}
+\end{figure}
+    
+
+Ainsi, la résolution approchée par réseau de neurones permet de retrouver la solution analytique aussi bien en transformant l'équation par un produit vectoriel par $\bm M$ qu'en la traitant directement.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion et perspectives}
@@ -850,7 +920,7 @@ On trace pour cela $\lVert \bm{M} \rVert$ en fonction du temps en figure~\ref{fi
 L'étude menée dans le chapitre~\ref{chap:ode_1} a permis de comprendre le principe de la résolution d'une équation différentielle par un réseau de neurones, et de montrer que cette approche permettait de résoudre une équation simple à une dimension.
 Le chapitre~\ref{chap:precession} a ensuite montré que cette approche donnait également des résultats concluants dans le cas d'un système de deux équations couplées décrivant un mouvement de précession.
 Cela a également donné l'occasion de prendre en main la librairie TensorFlow afin d'utiliser les méthodes de différentiation automatique pour le calcul de la dérivée de la fonction candidate ainsi que pour celui des gradients de le fonction de coût.
-Enfin le chapitre~\ref{chap:gilbert} a montré que l'approche mise en place permettait de retrouver de façon approchée les solutions analytiques de l'équation de précession avec amortissement, dans le cas où celle-ci est projetté dans le plan normal à $\bm M$.
+Enfin le chapitre~\ref{chap:gilbert} a montré que l'approche mise en place permettait de retrouver de façon approchée les solutions analytiques de l'équation de précession avec amortissement.
 
 
 Il serait utile d'améliorer les permorfances des algorithmes utilisés, en effet les entraînements des réseaux de neurones présentés ici ont rarement atteint une fonction de coût stationnaire. 
@@ -858,9 +928,7 @@ Les entraînements duraient jusqu'à plusieurs dizaines de minutes, et je n'ai p
 L'amélioration des performances d'entraînement pourrait être réalisée en essayant par exemple des algorithmes d'optimisation plus avancés que la descente de gradients, et également en utilisant d'autres méthodes d'entraînement plus performantes fournies par TensorFlow.
 On pourrait alors approfondir l'étude des différences de précision selon les différentes architectures de réseaux de neurones pour identifier lesquelles sont les plus pertinentes.
 
-Il serait aussi intéressant d'utiliser l'approche présentée dans ce rapport pour tenter de résoudre directement l'équation de Landau--Lifshitz-\-Gilbert~\cite{EquationGilbert} sans projection, afin de constater si cela permet de retrouver les mêmes solutions que l'équation projetée. 
-
-On peut ensuite envisager d'étudier de façon similaire l'équation obtenue en remplaçant le terme d'amortissement par un terme de nutation~\cite{Neeraj2021}, ainsi que l'équation prenant à la fois en compte l'amortissement et la nutation.
+Il serait intéressant d'utiliser l'approche présentée dans ce rapport pour tenter de résoudre l'équation obtenue en remplaçant le terme d'amortissement par un terme de nutation~\cite{Neeraj2021}, ainsi que l'équation prenant à la fois en compte l'amortissement et la nutation, qui n'admet pas de solution connue.
 
 
 \begin{thebibliography}{8}
