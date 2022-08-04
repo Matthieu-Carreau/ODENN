@@ -16,5 +16,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: PDF
-        path: rapport.pdf
+        path: ODENN/rapport.pdf
         retention-days: 5
