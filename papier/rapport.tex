@@ -1,4 +1,4 @@
-\documentclass[12pt]{report}
+\documentclass[12pt,a4paper]{report}
 
 \usepackage[utf8]{inputenc}
 \usepackage{stmaryrd}
@@ -12,30 +12,36 @@
 \usepackage{bm}
 \usepackage{hyperref}
 
-\title{Résolution de l'équation de précession d'un moment magnétique par réseaux de neurones}
-
-\author{
-  Matthieu Carreau\\
-  Telecom Paris, Institut Polytechnique de Paris\\
-  F-91120, Palaiseau, France\\
-  \texttt{matthieu.carreau@telecom-paris.fr} \\
-  [1em] Supervisors: \\
-  Stam Nicolis\\
-  Institut Denis Poisson\\
-  Université de Tours, Université d'Orléans, CNRS (UMR7013)\\
-  Parc de Grandmont, F-37200, Tours, France\\
-  \texttt{stam.nicolis@lmpt.univ-tours.fr}\\
-  [1em] \\
-  Pascal Thibaudeau\\
-  CEA Le Ripault\\
-  BP 16, F-37260, Monts, France\\
-  \texttt{pascal.thibaudeau@cea.fr}
-}
-\date{Juillet 2022}
 
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.15\textwidth]{logo.png}\par\vspace{1cm}
+	{\Large Rapport de fin de stage\par}
+	\vspace{1.5cm}
+	{\Huge Résolution de l'équation de précession d'un moment magnétique par réseaux de neurones\par}
+	\vspace{2cm}
+	{{\large{\textsc{Matthieu Carreau}}}\\
+    Telecom Paris, Institut Polytechnique de Paris\\
+    F-91120, Palaiseau, France\\
+    \texttt{matthieu.carreau@telecom-paris.fr}\par}
+	\vfill
+	supervisé par\par
+	Stam Nicolis\\
+    Institut Denis Poisson\\
+    Université de Tours, Université d'Orléans, CNRS (UMR7013)\\
+    Parc de Grandmont, F-37200, Tours, France\par
+    \vfill
+    Pascal Thibaudeau\\
+    CEA Le Ripault\\
+    BP 16, F-37260, Monts, France
+    \par
+	\vfill
+
+    % Bottom of the page
+	{\large Juillet 2022\par}
+\end{titlepage}
 
 \begin{abstract}
     Ce rapport présente une méthode numérique permettant l'étude de la préces\-sion d'un moment magnétique dans un champ extérieur en présence d'un amortissement.
